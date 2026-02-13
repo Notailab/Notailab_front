@@ -242,6 +242,9 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router' // 导入路由跳转工具
+import axios from 'axios'
+import { login, register } from '../api/user.js'
+import { toastSuccess, toastError, toastWarn, toastInfo } from '@/utils/toast'
 
 // 标签切换：login/register
 const activeTab = ref('login')
@@ -265,105 +268,86 @@ const registerForm = ref({
 // 获取路由实例（用于跳转页面）
 const router = useRouter()
 
-// 模拟用户数据库（实际项目替换为后端接口）
-const userDB = ref([
-  { username: 'admin', password: '123456', email: 'admin@notailab.com' }
-])
-
 // 登录逻辑
-const handleLogin = () => {
-  // 1. 空值验证
-  if (!loginForm.value.username.trim()) {
-    alert('请输入用户名！')
-    return
-  }
-  if (!loginForm.value.password.trim()) {
-    alert('请输入密码！')
-    return
-  }
+const handleLogin = async () => {
+    if (!loginForm.value.username.trim()) {
+        toastInfo('请输入用户名！')
+        return
+    }
+    if (!loginForm.value.password.trim()) {
+        toastInfo('请输入密码！')
+        return
+    }
 
-  // 2. 验证用户
-  const user = userDB.value.find(item => 
-    item.username === loginForm.value.username && item.password === loginForm.value.password
-  )
+    const res = await login({
+        username: loginForm.value.username,
+        password: loginForm.value.password
+    })
 
-  if (user) {
-    // 登录成功
-    alert('登录成功！即将进入系统')
-    router.push('/home') // 跳转到首页
-  } else {
-    // 登录失败
-    alert('用户名或密码错误！\n测试账号：admin，密码：123456')
-    loginForm.value.password = '' // 清空密码
-  }
+    if (res.code === 200) {
+        toastSuccess('登录成功')
+        router.push('/home')
+    } else {
+        toastWarn('登录失败')
+    }
 }
 
 // 注册逻辑
-const handleRegister = () => {
-  // 1. 基础验证
-  if (!registerForm.value.username.trim()) {
-    alert('请输入用户名！')
-    return
-  }
-  if (registerForm.value.username.length < 3 || registerForm.value.username.length > 16) {
-    alert('用户名长度需在3-16位之间！')
-    return
-  }
-  if (!registerForm.value.email.trim()) {
-    alert('请输入邮箱！')
-    return
-  }
-  if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(registerForm.value.email)) {
-    alert('请输入有效的邮箱地址！')
-    return
-  }
-  if (!registerForm.value.password.trim()) {
-    alert('请输入密码！')
-    return
-  }
-  if (registerForm.value.password.length < 6 || registerForm.value.password.length > 16) {
-    alert('密码长度需在6-16位之间！')
-    return
-  }
-  if (registerForm.value.password !== registerForm.value.confirmPwd) {
-    alert('两次输入的密码不一致！')
-    return
-  }
-  if (!registerForm.value.agreeProtocol) {
-    alert('请阅读并同意用户协议和隐私政策！')
-    return
-  }
+const handleRegister = async () => {
+    if (!registerForm.value.username.trim()) {
+        toastInfo('请输入用户名！')
+        return
+    }
+    if (registerForm.value.username.length < 3 || registerForm.value.username.length > 16) {
+        toastInfo('用户名长度需在3-16位之间！')
+        return
+    }
+    if (!registerForm.value.email.trim()) {
+        toastInfo('请输入邮箱！')
+        return
+    }
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(registerForm.value.email)) {
+        toastInfo('请输入有效的邮箱地址！')
+        return
+    }
+    if (!registerForm.value.password.trim()) {
+        toastInfo('请输入密码！')
+        return
+    }
+    if (registerForm.value.password.length < 6 || registerForm.value.password.length > 16) {
+        toastInfo('密码长度需在6-16位之间！')
+        return
+    }
+    if (registerForm.value.password !== registerForm.value.confirmPwd) {
+        toastInfo('两次输入的密码不一致！')
+        return
+    }
+    if (!registerForm.value.agreeProtocol) {
+        toastInfo('请阅读并同意用户协议和隐私政策！')
+        return
+    }
 
-  // 2. 检查用户名/邮箱是否已存在
-  const usernameExist = userDB.value.some(item => item.username === registerForm.value.username)
-  const emailExist = userDB.value.some(item => item.email === registerForm.value.email)
-  
-  if (usernameExist) {
-    alert('该用户名已被注册！')
-    return
-  }
-  if (emailExist) {
-    alert('该邮箱已被注册！')
-    return
-  }
+    const res = await register({
+        username: registerForm.value.username,
+        password: registerForm.value.password,
+        email: registerForm.value.email
+    })
 
-  // 3. 注册成功
-  userDB.value.push({
-    username: registerForm.value.username,
-    password: registerForm.value.password,
-    email: registerForm.value.email
-  })
-  
-  alert('注册成功！请登录')
-  // 清空注册表单并切回登录标签
-  registerForm.value = {
-    username: '',
-    email: '',
-    password: '',
-    confirmPwd: '',
-    agreeProtocol: false
-  }
-  activeTab.value = 'login'
+    if (res.code === 200) {
+        toastSuccess('注册成功！请登录')
+        registerForm.value = {
+            username: '',
+            email: '',
+            password: '',
+            confirmPwd: '',
+            agreeProtocol: false
+        }
+        activeTab.value = 'login'
+    } else if (res.code === 1001) {
+        toastWarn('注册失败，用户名已经被使用')
+    } else if (res.code === 1002) {
+        toastWarn('注册失败，邮箱已经被使用')
+    }
 }
 </script>
 
