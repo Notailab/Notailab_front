@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../views/login.vue'
 import Home from '../views/home.vue'
 import NodeList from '../views/node_list.vue'
+import NodeEdit from '../views/node_edit.vue'
 
 const routes = [
   {
@@ -19,6 +20,11 @@ const routes = [
     path: '/node_list',
     name: 'node_list',
     component: NodeList
+  },
+  {
+    path: '/node_edit',
+    name: 'node_edit',
+    component: NodeEdit
   }
 ]
 
