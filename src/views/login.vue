@@ -242,7 +242,6 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router' // 导入路由跳转工具
-import axios from 'axios'
 import { login, register } from '../api/user.js'
 import { toastSuccess, toastError, toastWarn, toastInfo } from '@/utils/toast'
 
@@ -285,6 +284,7 @@ const handleLogin = async () => {
     })
 
     if (res.code === 200) {
+        localStorage.setItem('token', res.token)
         toastSuccess('登录成功')
         router.push('/home')
     } else {

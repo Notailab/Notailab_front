@@ -16,10 +16,13 @@
           <!-- 右侧用户信息 + 退出按钮 -->
           <div class="flex items-center space-x-4">
             <div class="flex items-center">
-              <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white">
-                {{ username.slice(0, 1).toUpperCase() }}
-              </div>
-              <span class="ml-2 text-sm font-medium text-gray-700">{{ username }}</span>
+                <img 
+                    v-if="userInfo.avatar" 
+                    :src="userInfo.avatar" 
+                    alt="用户头像"
+                    class="avatar w-8 h-8"
+                />
+              <span class="ml-2 text-sm font-medium text-gray-700">{{ userInfo.username }}</span>
             </div>
             <button 
               @click="logout"
@@ -39,11 +42,14 @@
         <div class="lg:col-span-1 bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
           <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-8 text-white">
             <div class="flex items-center">
-              <div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl font-bold">
-                {{ username.slice(0, 1).toUpperCase() }}
-              </div>
+                <img 
+                    v-if="userInfo.avatar" 
+                    :src="userInfo.avatar" 
+                    alt="用户头像"
+                    class="avatar"
+                />
               <div class="ml-4">
-                <h2 class="text-xl font-bold">{{ username }}</h2>
+                <h2 class="text-xl font-bold">{{ userInfo.username }}</h2>
                 <p class="text-white/80 text-sm mt-1">普通用户</p>
               </div>
             </div>
@@ -205,14 +211,35 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { getUserInfo } from '../api/user.js'
 
 // 获取路由实例
 const router = useRouter()
 
-// 用户名（从登录页传递/本地存储获取，这里先模拟）
-const username = ref('admin')
+const userInfo = ref({
+    username: '',
+    avatar: '',
+})
+
+const fetchUserInfo = async () => {
+    try {
+        const res = await getUserInfo()
+
+        if (res.code === 200) {
+            userInfo.value.username = res.username
+            userInfo.value.avatar = res.avatar
+        } else {
+            toastError(data.message)
+        }
+    } catch (error) {
+        console.log('获取用户信息失败：', error)
+    }
+}
+onMounted(() => {
+    fetchUserInfo()
+})
 
 // 模拟学习数据
 const studyDays = ref(68) // 累计学习天数
@@ -234,7 +261,7 @@ const logout = () => {
     // 清空本地存储（如果有）
     localStorage.removeItem('rememberedUsername')
     // 跳回登录页
-    router.push('/')
+    router.push('/login')
   }
 }
 </script>
