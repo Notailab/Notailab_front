@@ -2,8 +2,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../views/login.vue'
 import Home from '../views/home.vue'
-import NodeList from '../views/node_list.vue'
-import NodeEdit from '../views/node_edit.vue'
+import NoteList from '../views/note_list.vue'
+import NoteEdit from '../views/note_edit.vue'
+import Porfile from '../views/profile.vue'
 
 const routes = [
   {
@@ -17,14 +18,19 @@ const routes = [
     component: Home
   },
   {
-    path: '/node_list',
-    name: 'node_list',
-    component: NodeList
+    path: '/note_list',
+    name: 'note_list',
+    component: NoteList
   },
   {
-    path: '/node_edit',
-    name: 'node_edit',
-    component: NodeEdit
+    path: '/note_edit',
+    name: 'note_edit',
+    component: NoteEdit
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: Porfile
   }
 ]
 
