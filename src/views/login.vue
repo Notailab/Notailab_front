@@ -1,21 +1,23 @@
 <template>
   <!-- 主容器：渐变背景 + 网格纹理 + 动态光斑 -->
   <div class="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-    <!-- 1. 网格纹理背景（时尚低透明度网格） -->
-    <div class="absolute inset-0 bg-grid-white/[0.05] [mask-image:linear-gradient(to_bottom,white,transparent)] pointer-events-none"></div>
+    <!-- 网格纹理背景（时尚低透明度网格） -->
+    <div class="absolute inset-0 bg-grid-white/[0.05] pointer-events-none"></div>
     
-    <!-- 2. 动态漂浮光斑（多个随机位置的模糊光球） -->
-    <div class="absolute top-[10%] left-[15%] w-64 h-64 bg-white/10 rounded-full blur-3xl animate-pulse-slow"></div>
-    <div class="absolute bottom-[20%] right-[10%] w-80 h-80 bg-purple-400/15 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 1s"></div>
-    <div class="absolute top-[40%] right-[20%] w-48 h-48 bg-blue-400/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 2s"></div>
-    
-    <!-- 3. 漂浮粒子装饰（小点点） -->
+    <!-- 漂浮粒子装饰（小点点） -->
     <div class="absolute inset-0 pointer-events-none">
-      <div class="absolute top-[5%] left-[5%] w-2 h-2 bg-white/20 rounded-full"></div>
-      <div class="absolute top-[15%] right-[25%] w-1 h-1 bg-white/20 rounded-full"></div>
-      <div class="absolute bottom-[30%] left-[20%] w-1.5 h-1.5 bg-white/20 rounded-full"></div>
-      <div class="absolute bottom-[10%] right-[30%] w-2 h-2 bg-white/20 rounded-full"></div>
-      <div class="absolute top-[70%] left-[40%] w-1 h-1 bg-white/20 rounded-full"></div>
+        <div 
+            v-for="particle in particles" 
+            :key="particle.id"
+            class="absolute rounded-full"
+            :style="{
+            top: `${particle.top}%`,
+            left: `${particle.left}%`,
+            width: `${particle.size}px`,
+            height: `${particle.size}px`,
+            backgroundColor: `rgba(255, 255, 255, ${particle.opacity})`
+            }"
+        ></div>
     </div>
 
     <!-- 登录/注册卡片：毛玻璃效果 -->
@@ -233,17 +235,48 @@
 
       <!-- 页脚版权 -->
       <p class="mt-8 text-center text-sm text-white/80">
-        &copy; 2025 Notailab. All rights reserved.
+        &copy; 2026 Notailab. All rights reserved.
       </p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router' // 导入路由跳转工具
-import { login, register } from '../api/user.js'
+import { login, register } from '@/api/user.js'
 import { toastSuccess, toastError, toastWarn, toastInfo } from '@/utils/toast'
+
+const particleConfig = {
+    count: 30, // 粒子数量（想要多少改多少）
+    minSize: 2, // 最小尺寸（px）
+    maxSize: 8, // 最大尺寸（px）
+    minOpacity: 0.1, // 最小透明度（0-1）
+    maxOpacity: 0.3 // 最大透明度（0-1）
+}
+
+// 2. 响应式存储粒子数据
+const particles = ref([])
+
+// 3. 生成随机粒子的核心函数
+const generateParticles = () => {
+    const particlesList = []
+    for (let i = 0; i < particleConfig.count; i++) {
+        particlesList.push({
+        id: i + 1, // 唯一key
+        top: Math.random() * 100, // 随机top位置（0-100%）
+        left: Math.random() * 100, // 随机left位置（0-100%）
+        size: Math.random() * (particleConfig.maxSize - particleConfig.minSize) + particleConfig.minSize, // 随机尺寸
+        opacity: Math.random() * (particleConfig.maxOpacity - particleConfig.minOpacity) + particleConfig.minOpacity // 随机透明度
+        })
+    }
+    particles.value = particlesList
+}
+
+// 4. 页面挂载时生成粒子，刷新页面自动重新生成
+onMounted(() => {
+    generateParticles()
+})
 
 // 标签切换：login/register
 const activeTab = ref('login')
@@ -357,21 +390,5 @@ const handleRegister = async () => {
   background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
                     linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
   background-size: 24px 24px;
-}
-
-/* 自定义慢脉冲动画 */
-.animate-pulse-slow {
-  animation: pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.7;
-    transform: scale(1.05);
-  }
 }
 </style>

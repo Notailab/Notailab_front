@@ -18,4 +18,7 @@ body {
   background-color: #f5f5f5; /* 浅灰色背景，避免全白 */
   font-family: "Microsoft Yahei", sans-serif;
 }
+::-webkit-scrollbar {
+  display: none;
+}
 </style>

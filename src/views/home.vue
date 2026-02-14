@@ -1,11 +1,10 @@
 <template>
-  <!-- 主容器 -->
-  <div class="min-h-screen flex flex-col bg-slate-50">
-    <!-- 顶部导航栏 -->
-    <header class="bg-white shadow-sm sticky top-0 z-30">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
-          <!-- 左侧logo/标题 -->
+  <div class="min-h-screen bg-gray-50 flex flex-col">
+
+    <!-- 顶部标题栏 -->
+    <header class="bg-white shadow sticky top-0 z-30">
+      <div class="mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-14">
           <div class="flex items-center">
             <svg class="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
@@ -13,7 +12,7 @@
             <span class="ml-2 text-xl font-semibold text-gray-800">Notailab</span>
           </div>
 
-          <!-- 右侧用户信息 + 退出按钮 -->
+          <!-- 右侧导航 -->
           <div class="flex items-center space-x-4">
             <div class="flex items-center">
                 <img 
@@ -24,202 +23,140 @@
                 />
               <span class="ml-2 text-sm font-medium text-gray-700">{{ userInfo.username }}</span>
             </div>
-            <button 
-              @click="logout"
-              class="px-3 py-1.5 text-sm bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors"
-            >
-              退出登录
-            </button>
           </div>
         </div>
       </div>
     </header>
 
-    <!-- 主要内容区 -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
-      <!-- 第一行：用户信息卡片 -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <div class="lg:col-span-1 bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-          <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-8 text-white">
-            <div class="flex items-center">
-                <img 
-                    v-if="userInfo.avatar" 
-                    :src="userInfo.avatar" 
-                    alt="用户头像"
-                    class="avatar"
-                />
-              <div class="ml-4">
-                <h2 class="text-xl font-bold">{{ userInfo.username }}</h2>
-                <p class="text-white/80 text-sm mt-1">普通用户</p>
-              </div>
-            </div>
-          </div>
-          <div class="px-6 py-4">
-            <div class="space-y-3">
-              <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-500">注册时间</span>
-                <span class="text-sm font-medium text-gray-700">2025-02-13</span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-500">累计学习天数</span>
-                <span class="text-sm font-medium text-gray-700">{{ studyDays }} 天</span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-500">最近登录</span>
-                <span class="text-sm font-medium text-gray-700">今天 {{ new Date().toLocaleTimeString().slice(0, 5) }}</span>
-              </div>
-            </div>
-            <button class="w-full mt-4 px-4 py-2 text-sm bg-indigo-50 text-indigo-600 rounded-md hover:bg-indigo-100 transition-colors">
-              编辑个人信息
-            </button>
-          </div>
-        </div>
-
-        <!-- 学习数据统计 -->
-        <div class="lg:col-span-2 bg-white rounded-xl shadow-md border border-gray-100 p-6">
-          <h3 class="text-lg font-semibold text-gray-800 mb-6">学习数据统计</h3>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <!-- 统计卡片1：总学习时长 -->
-            <div class="bg-indigo-50 rounded-lg p-4 text-center">
-              <p class="text-sm text-indigo-600 mb-1">总学习时长</p>
-              <p class="text-2xl font-bold text-gray-800">{{ totalStudyHours }} 小时</p>
-              <p class="text-xs text-gray-500 mt-1">较上周 +{{ studyHoursGrowth }}%</p>
-            </div>
-            <!-- 统计卡片2：完成任务数 -->
-            <div class="bg-purple-50 rounded-lg p-4 text-center">
-              <p class="text-sm text-purple-600 mb-1">完成任务数</p>
-              <p class="text-2xl font-bold text-gray-800">{{ completedTasks }} 个</p>
-              <p class="text-xs text-gray-500 mt-1">较上周 +{{ tasksGrowth }}%</p>
-            </div>
-            <!-- 统计卡片3：学习效率 -->
-            <div class="bg-pink-50 rounded-lg p-4 text-center">
-              <p class="text-sm text-pink-600 mb-1">学习效率</p>
-              <p class="text-2xl font-bold text-gray-800">{{ studyEfficiency }}%</p>
-              <p class="text-xs text-gray-500 mt-1">较上周 +{{ efficiencyGrowth }}%</p>
-            </div>
-          </div>
-
-          <!-- 学习趋势图（模拟） -->
-          <div class="mt-6 bg-gray-50 rounded-lg p-4">
-            <p class="text-sm font-medium text-gray-700 mb-3">近7天学习时长趋势</p>
-            <div class="h-40 flex items-end justify-between space-x-2">
-              <div class="w-full flex items-end justify-between">
-                <div class="flex flex-col items-center w-8">
-                  <div class="w-4 bg-indigo-400 rounded-t-sm" style="height: {{ trendData[0] }}%"></div>
-                  <span class="text-xs text-gray-500 mt-1">周一</span>
-                </div>
-                <div class="flex flex-col items-center w-8">
-                  <div class="w-4 bg-indigo-400 rounded-t-sm" style="height: {{ trendData[1] }}%"></div>
-                  <span class="text-xs text-gray-500 mt-1">周二</span>
-                </div>
-                <div class="flex flex-col items-center w-8">
-                  <div class="w-4 bg-indigo-400 rounded-t-sm" style="height: {{ trendData[2] }}%"></div>
-                  <span class="text-xs text-gray-500 mt-1">周三</span>
-                </div>
-                <div class="flex flex-col items-center w-8">
-                  <div class="w-4 bg-indigo-400 rounded-t-sm" style="height: {{ trendData[3] }}%"></div>
-                  <span class="text-xs text-gray-500 mt-1">周四</span>
-                </div>
-                <div class="flex flex-col items-center w-8">
-                  <div class="w-4 bg-indigo-400 rounded-t-sm" style="height: {{ trendData[4] }}%"></div>
-                  <span class="text-xs text-gray-500 mt-1">周五</span>
-                </div>
-                <div class="flex flex-col items-center w-8">
-                  <div class="w-4 bg-indigo-400 rounded-t-sm" style="height: {{ trendData[5] }}%"></div>
-                  <span class="text-xs text-gray-500 mt-1">周六</span>
-                </div>
-                <div class="flex flex-col items-center w-8">
-                  <div class="w-4 bg-indigo-600 rounded-t-sm" style="height: {{ trendData[6] }}%"></div>
-                  <span class="text-xs text-gray-500 mt-1">周日</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 第二行：功能导航区 -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- 功能卡片1：学习记录 -->
-        <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 hover:shadow-lg transition-shadow cursor-pointer">
-          <div class="w-12 h-12 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 mb-4">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+    <!-- 主体内容区（带响应式适配） -->
+    <div class="flex flex-1 overflow-hidden">
+      <!-- 左侧侧边栏：响应式隐藏/显示 -->
+      <aside class="w-72 bg-gray-50 border-r border-gray-200 overflow-y-auto hidden lg:block">
+        <div class="p-4 border-b border-gray-200">
+          <button class="w-full text-sm px-3 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 duration-200 hover:scale-[1.02] flex items-center justify-center gap-2 mb-4">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
-          </div>
-          <h3 class="text-lg font-semibold text-gray-800">学习记录</h3>
-          <p class="text-sm text-gray-500 mt-2">查看和管理你的每日学习记录</p>
-          <button class="mt-4 text-sm text-indigo-600 hover:text-indigo-700 transition-colors">
-            进入 →
+            新建笔记
           </button>
-        </div>
-
-        <!-- 功能卡片2：学习计划 -->
-        <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 hover:shadow-lg transition-shadow cursor-pointer">
-          <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600 mb-4">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
+          <div class="mb-3">
+            <input
+              type="text"
+              placeholder="Find a note..."
+              class="w-full text-sm px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            />
           </div>
-          <h3 class="text-lg font-semibold text-gray-800">学习计划</h3>
-          <p class="text-sm text-gray-500 mt-2">制定和跟踪你的学习目标与计划</p>
-          <button class="mt-4 text-sm text-purple-600 hover:text-purple-700 transition-colors">
-            进入 →
-          </button>
-        </div>
-
-        <!-- 功能卡片3：数据报表 -->
-        <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 hover:shadow-lg transition-shadow cursor-pointer">
-          <div class="w-12 h-12 rounded-lg bg-pink-100 flex items-center justify-center text-pink-600 mb-4">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-            </svg>
+          <div class="space-y-1">
+            <div
+              v-for="repo in recentRepos"
+              :key="repo.id"
+              class="flex items-center gap-2 text-sm text-gray-700 hover:text-indigo-600 cursor-pointer py-1"
+            >
+              <span>{{ repo.name }}</span>
+            </div>
           </div>
-          <h3 class="text-lg font-semibold text-gray-800">数据报表</h3>
-          <p class="text-sm text-gray-500 mt-2">查看详细的学习数据和分析报表</p>
-          <button class="mt-4 text-sm text-pink-600 hover:text-pink-700 transition-colors">
-            进入 →
-          </button>
+          <button class="text-xs text-gray-500 hover:text-indigo-600 mt-4">Show more</button>
         </div>
+      </aside>
 
-        <!-- 功能卡片4：系统设置 -->
-        <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 hover:shadow-lg transition-shadow cursor-pointer">
-          <div class="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600 mb-4">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-            </svg>
+      <!-- 中间主内容区：自适应宽度 -->
+      <main class="flex-1 overflow-y-auto bg-gray-50 p-6 lg:px-8">
+        <div class="max-w-5xl mx-auto">
+          <!-- 移动端侧边栏切换按钮 -->
+          <button class="lg:hidden mb-4 text-sm px-3 py-2 bg-white border border-gray-200 rounded-md hover:bg-gray-100">
+            ☰ Repositories
+          </button>
+
+          <div class="space-y-6">
+            <!-- 笔记动态卡片 -->
+            <div
+              v-for="item in feedItems"
+              :key="item.id"
+              class="bg-white border border-gray-200 rounded-md overflow-hidden"
+            >
+              <div class="bg-gray-50 px-4 py-2 border-b border-gray-200 flex items-center justify-between">
+                <div class="flex items-center gap-2 text-sm text-gray-700">
+                  <svg class="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h7a2.5 2.5 0 0 1 2.5 2.5v11a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-11zM4.5 1a1.5 1.5 0 0 0-1.5 1.5v11a1.5 1.5 0 0 0 1.5 1.5h7a1.5 1.5 0 0 0 1.5-1.5v-11a1.5 1.5 0 0 0-1.5-1.5h-7z" />
+                  </svg>
+                  <span class="font-medium">{{ item.repo }}</span>
+                  <span class="text-gray-500">updated</span>
+                </div>
+                <button class="text-gray-400 hover:text-gray-600">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M3 6a.75.75 0 0 1 .75-.75h8.5a.75.75 0 0 1 0 1.5h-8.5A.75.75 0 0 1 3 6Zm0 4a.75.75 0 0 1 .75-.75h8.5a.75.75 0 0 1 0 1.5h-8.5A.75.75 0 0 1 3 10Z" />
+                  </svg>
+                </button>
+              </div>
+              <div class="p-4">
+                <div class="flex items-center gap-1 text-xs text-gray-500 mb-2">
+                  <span class="bg-green-100 text-green-600 px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M8 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" />
+                      <path fill-rule="evenodd" d="M1.5 8a6.5 6.5 0 1 1 13 0 6.5 6.5 0 0 1-13 0ZM8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0Z" />
+                    </svg>
+                    {{ item.time }}
+                  </span>
+                </div>
+                <h3 class="text-base font-semibold text-gray-800 mb-2">{{ item.title }}</h3>
+                <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ item.description }}</p>
+                <button class="text-xs text-indigo-600 hover:underline">Read more</button>
+              </div>
+            </div>
+
+            <!-- 推荐笔记 -->
+            <div class="bg-white border border-gray-200 rounded-md overflow-hidden">
+              <div class="px-4 py-2 border-b border-gray-200 flex items-center justify-between">
+                <span class="text-sm font-medium text-gray-700">推荐笔记</span>
+                <a href="#" class="text-xs text-indigo-600 hover:underline">查看更多</a>
+              </div>
+              <div class="p-4">
+                <div class="space-y-3">
+                  <div v-for="note in recommendedNotes" :key="note.id" class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h7a2.5 2.5 0 0 1 2.5 2.5v11a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-11zM4.5 1a1.5 1.5 0 0 0-1.5 1.5v11a1.5 1.5 0 0 0 1.5 1.5h7a1.5 1.5 0 0 0 1.5-1.5v-11a1.5 1.5 0 0 0-1.5-1.5h-7z" />
+                    </svg>
+                    <div class="flex-1">
+                      <div class="text-sm font-medium text-gray-800 hover:text-indigo-600 cursor-pointer">{{ note.title }}</div>
+                      <div class="text-xs text-gray-500">{{ note.category }} · {{ note.updatedAt }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <h3 class="text-lg font-semibold text-gray-800">系统设置</h3>
-          <p class="text-sm text-gray-500 mt-2">修改账号密码、通知设置等</p>
-          <button class="mt-4 text-sm text-gray-600 hover:text-gray-700 transition-colors">
-            进入 →
-          </button>
         </div>
-      </div>
-    </main>
+      </main>
 
-    <!-- 页脚 -->
-    <footer class="bg-white border-t border-gray-200 mt-12">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <p class="text-center text-sm text-gray-500">
-            &copy; 2025 Notailab. All rights reserved.
-        </p>
-      </div>
-    </footer>
+      <!-- 右侧侧边栏：响应式隐藏/显示 -->
+      <aside class="w-80 bg-white border-l border-gray-200 overflow-y-auto hidden xl:block">
+        <div class="p-4 sticky top-0 bg-white">
+          <h3 class="text-sm font-semibold text-gray-800 mb-3">最近更新</h3>
+          <div class="space-y-3">
+            <div v-for="log in changelog" :key="log.id" class="flex gap-2">
+              <div class="w-1.5 h-1.5 rounded-full bg-gray-300 mt-1.5 flex-shrink-0"></div>
+              <div>
+                <div class="text-xs text-gray-500 mb-1">{{ log.time }}</div>
+                <p class="text-xs text-gray-700">{{ log.content }}</p>
+              </div>
+            </div>
+          </div>
+          <button class="text-xs text-indigo-600 hover:underline mt-3">查看全部更新 →</button>
+        </div>
+      </aside>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { getUserInfo } from '../api/user.js'
+import { getUserInfo } from '@/api/user.js'
 
-// 获取路由实例
 const router = useRouter()
 
 const userInfo = ref({
-    username: '',
+    username: 'xxx',
     avatar: '',
 })
 
@@ -237,47 +174,47 @@ const fetchUserInfo = async () => {
         console.log('获取用户信息失败：', error)
     }
 }
+
 onMounted(() => {
     fetchUserInfo()
 })
 
-// 模拟学习数据
-const studyDays = ref(68) // 累计学习天数
-const totalStudyHours = ref(156.5) // 总学习时长
-const completedTasks = ref(89) // 完成任务数
-const studyEfficiency = ref(87) // 学习效率
+// 最近编辑的笔记/仓库
+const recentRepos = ref([
+    { id: 1, name: 'Go 编程基础' },
+    { id: 2, name: 'Vue3 组合式 API 最佳实践' },
+    { id: 3, name: 'Notailab' },
+])
 
-// 模拟增长率
-const studyHoursGrowth = ref(12)
-const tasksGrowth = ref(8)
-const efficiencyGrowth = ref(5)
+// 动态流内容
+const feedItems = ref([
+    {
+        id: 1,
+        repo: 'Notailab/学习笔记',
+        time: '今天 14:32',
+        title: 'Go 并发编程基础 - 新增通道使用示例',
+        description: '补充了通道的缓冲/非缓冲使用场景，以及 select 语句处理多通道的最佳实践，修复了示例代码中的死锁问题...',
+    },
+    {
+        id: 2,
+        repo: 'Notailab/前端笔记',
+        time: '昨天 20:15',
+        title: 'Vue3 组合式 API 最佳实践 - 新增生命周期示例',
+        description: '新增了 onMounted、onUnmounted 的实际业务场景使用示例，对比了 Options API 和 Composition API 的差异...',
+    }
+])
 
-// 近7天学习时长趋势（百分比）
-const trendData = ref([45, 60, 75, 50, 80, 90, 95])
+// 推荐笔记
+const recommendedNotes = ref([
+    { id: 1, title: 'PostgreSQL 性能优化', category: '数据库', updatedAt: '2天前' },
+    { id: 2, title: 'Linux 常用命令速查', category: '运维', updatedAt: '3天前' },
+    { id: 3, title: 'JWT 鉴权原理与实现', category: '安全', updatedAt: '1周前' },
+])
 
-// 退出登录方法
-const logout = () => {
-  if (confirm('确定要退出登录吗？')) {
-    // 清空本地存储（如果有）
-    localStorage.removeItem('rememberedUsername')
-    // 跳回登录页
-    router.push('/login')
-  }
-}
+// 更新日志
+const changelog = ref([
+    { id: 1, time: '3小时前', content: '新增笔记分类功能，支持按标签筛选内容' },
+    { id: 2, time: '5小时前', content: '优化笔记编辑页面，提升Markdown渲染速度' },
+    { id: 3, time: '10小时前', content: '修复移动端笔记列表加载异常的问题' },
+])
 </script>
-
-<style scoped>
-/* 自定义样式（Tailwind 覆盖/补充） */
-.grid {
-  display: grid;
-}
-.gap-6 {
-  gap: 1.5rem;
-}
-.hover\:shadow-lg:hover {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
-.transition-shadow {
-  transition: box-shadow 0.2s ease-in-out;
-}
-</style>

@@ -1,8 +1,10 @@
 <template>
-  <div class="min-h-screen flex flex-col  bg-slate-50">
-    <header class="bg-white shadow-sm sticky top-0 z-30">
+  <div class="min-h-screen bg-gray-50 flex flex-col">
+
+    <!-- 顶部标题栏 -->
+    <header class="bg-white shadow sticky top-0 z-30">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
+        <div class="flex justify-between items-center h-14">
           <div class="flex items-center">
             <svg class="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
@@ -11,18 +13,21 @@
           </div>
 
           <!-- 右侧导航 -->
-          <nav class="flex items-center space-x-6">
-            <a href="/note_list" class="text-sm text-gray-600 hover:text-indigo-600">笔记管理</a>
-            <a href="/profile" class="text-sm font-medium text-indigo-600 border-b-2 border-indigo-600 pb-0.5">个人中心</a>
-            <button class="text-sm text-gray-600 hover:text-indigo-600">退出登录</button>
-          </nav>
+          <div class="flex items-center space-x-4">
+            <div class="flex items-center">
+              <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white">
+                A
+              </div>
+              <span class="ml-2 text-sm font-medium text-gray-700">aaa</span>
+            </div>
+          </div>
         </div>
       </div>
     </header>
 
     <!-- 主要内容区 -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
-      <div class="grid grid-cols-12 gap-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow ">
+      <div class="grid grid-cols-12 gap-8 ">
         <!-- 左侧：个人信息卡片 -->
         <div class="col-span-3">
           <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -89,15 +94,85 @@
 
         <!-- 右侧：内容区域 -->
         <div class="col-span-9">
+
+      <div class="grid grid-cols-1 lg:grid-cols-1 gap-6 mb-8">
+
+        <!-- 学习数据统计 -->
+        <div class="lg:col-span-2 bg-white rounded-xl shadow-md border border-gray-100 p-6">
+          <h3 class="text-lg font-semibold text-gray-800 mb-6">学习数据统计</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <!-- 统计卡片1：总学习时长 -->
+            <div class="bg-indigo-50 rounded-lg p-4 text-center">
+              <p class="text-sm text-indigo-600 mb-1">总学习时长</p>
+              <p class="text-2xl font-bold text-gray-800">{{ totalStudyHours }} 小时</p>
+              <p class="text-xs text-gray-500 mt-1">较上周 +{{ studyHoursGrowth }}%</p>
+            </div>
+            <!-- 统计卡片2：完成任务数 -->
+            <div class="bg-purple-50 rounded-lg p-4 text-center">
+              <p class="text-sm text-purple-600 mb-1">完成任务数</p>
+              <p class="text-2xl font-bold text-gray-800">{{ completedTasks }} 个</p>
+              <p class="text-xs text-gray-500 mt-1">较上周 +{{ tasksGrowth }}%</p>
+            </div>
+            <!-- 统计卡片3：学习效率 -->
+            <div class="bg-pink-50 rounded-lg p-4 text-center">
+              <p class="text-sm text-pink-600 mb-1">学习效率</p>
+              <p class="text-2xl font-bold text-gray-800">{{ studyEfficiency }}%</p>
+              <p class="text-xs text-gray-500 mt-1">较上周 +{{ efficiencyGrowth }}%</p>
+            </div>
+          </div>
+
+          <!-- 学习趋势图（模拟） -->
+          <div class="mt-6 bg-gray-50 rounded-lg p-4">
+            <p class="text-sm font-medium text-gray-700 mb-3">近7天学习时长趋势</p>
+            <div class="h-40 flex items-end justify-between space-x-2">
+              <div class="w-full flex items-end justify-between">
+                <div class="flex flex-col items-center w-8">
+                  <div class="w-4 bg-indigo-400 rounded-t-sm" style="height: {{ trendData[0] }}%"></div>
+                  <span class="text-xs text-gray-500 mt-1">周一</span>
+                </div>
+                <div class="flex flex-col items-center w-8">
+                  <div class="w-4 bg-indigo-400 rounded-t-sm" style="height: {{ trendData[1] }}%"></div>
+                  <span class="text-xs text-gray-500 mt-1">周二</span>
+                </div>
+                <div class="flex flex-col items-center w-8">
+                  <div class="w-4 bg-indigo-400 rounded-t-sm" style="height: {{ trendData[2] }}%"></div>
+                  <span class="text-xs text-gray-500 mt-1">周三</span>
+                </div>
+                <div class="flex flex-col items-center w-8">
+                  <div class="w-4 bg-indigo-400 rounded-t-sm" style="height: {{ trendData[3] }}%"></div>
+                  <span class="text-xs text-gray-500 mt-1">周四</span>
+                </div>
+                <div class="flex flex-col items-center w-8">
+                  <div class="w-4 bg-indigo-400 rounded-t-sm" style="height: {{ trendData[4] }}%"></div>
+                  <span class="text-xs text-gray-500 mt-1">周五</span>
+                </div>
+                <div class="flex flex-col items-center w-8">
+                  <div class="w-4 bg-indigo-400 rounded-t-sm" style="height: {{ trendData[5] }}%"></div>
+                  <span class="text-xs text-gray-500 mt-1">周六</span>
+                </div>
+                <div class="flex flex-col items-center w-8">
+                  <div class="w-4 bg-indigo-600 rounded-t-sm" style="height: {{ trendData[6] }}%"></div>
+                  <span class="text-xs text-gray-500 mt-1">周日</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
           <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <!-- 基本信息 Tab -->
             <div v-if="activeTab === 'baseInfo'">
+
+
+
               <div class="mb-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-1">基本信息</h2>
                 <p class="text-sm text-gray-500">修改你的个人资料和展示信息</p>
               </div>
 
               <form @submit.prevent="saveBaseInfo">
+
                 <div class="grid grid-cols-2 gap-6 mb-6">
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">用户名</label>
@@ -282,9 +357,11 @@
     </main>
 
     <!-- 底部版权信息 -->
-    <footer class="bg-white border-t border-gray-200 py-6 mt-8">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-gray-500">
-        © 2026 Notailab. All rights reserved.
+    <footer class="bg-gray-50 py-2 fixed bottom-0 left-0 right-0"> <!-- 关键修改：固定定位+删边框 -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <p class="text-center text-sm text-gray-500">
+            &copy; 2026 Notailab. All rights reserved.
+        </p>
       </div>
     </footer>
   </div>
@@ -340,125 +417,3 @@ const saveEditorSetting = () => {
   localStorage.setItem('editorSetting', JSON.stringify(editorSetting.value))
 }
 </script>
-
-<style scoped>
-/* 基础样式 */
-.min-h-screen { min-height: 100vh; }
-.bg-slate-50 { background-color: #f8fafc; }
-.bg-white { background-color: #ffffff; }
-.bg-indigo-50 { background-color: #eef2ff; }
-.bg-indigo-600 { background-color: #4f46e5; }
-.bg-indigo-700 { background-color: #4338ca; }
-
-/* 布局 */
-.grid { display: grid; }
-.grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
-.col-span-3 { grid-column: span 3 / span 3; }
-.col-span-9 { grid-column: span 9 / span 9; }
-.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.gap-2 { gap: 0.5rem; }
-.gap-6 { gap: 1.5rem; }
-.gap-8 { gap: 2rem; }
-
-/* 间距 */
-.mx-auto { margin-left: auto; margin-right: auto; }
-.mt-2 { margin-top: 0.5rem; }
-.mt-3 { margin-top: 0.75rem; }
-.mt-6 { margin-top: 1.5rem; }
-.mt-8 { margin-top: 2rem; }
-.mb-1 { margin-bottom: 0.25rem; }
-.mb-2 { margin-bottom: 0.5rem; }
-.mb-3 { margin-bottom: 0.75rem; }
-.mb-4 { margin-bottom: 1rem; }
-.mb-6 { margin-bottom: 1.5rem; }
-.ml-2 { margin-left: 0.5rem; }
-.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
-.py-2\.5 { padding-top: 0.625rem; padding-bottom: 0.625rem; }
-.py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
-.py-8 { padding-top: 2rem; padding-bottom: 2rem; }
-.px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
-.px-4 { padding-left: 1rem; padding-right: 1rem; }
-.px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
-.px-8 { padding-left: 2rem; padding-right: 2rem; }
-.p-2 { padding: 0.5rem; }
-.p-4 { padding: 1rem; }
-.p-6 { padding: 1.5rem; }
-.pb-0\.5 { padding-bottom: 0.125rem; }
-
-/* 边框与圆角 */
-.rounded { border-radius: 0.25rem; }
-.rounded-lg { border-radius: 0.5rem; }
-.rounded-xl { border-radius: 0.75rem; }
-.rounded-full { border-radius: 9999px; }
-.border { border: 1px solid; }
-.border-t { border-top: 1px solid; }
-.border-b-2 { border-bottom: 2px solid; }
-.border-gray-100 { border-color: #f3f4f6; }
-.border-gray-200 { border-color: #e5e7eb; }
-.border-gray-300 { border-color: #d1d5db; }
-.border-indigo-500 { border-color: #6366f1; }
-.border-indigo-600 { border-color: #4f46e5; }
-
-/* 阴影 */
-.shadow-sm { box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
-
-/* 文本样式 */
-.text-center { text-align: center; }
-.text-left { text-align: left; }
-.text-right { text-align: right; }
-.text-xs { font-size: 0.75rem; }
-.text-sm { font-size: 0.875rem; }
-.text-base { font-size: 1rem; }
-.text-lg { font-size: 1.125rem; }
-.text-xl { font-size: 1.25rem; }
-.text-3xl { font-size: 1.875rem; }
-.font-bold { font-weight: 700; }
-.font-semibold { font-weight: 600; }
-.font-medium { font-weight: 500; }
-
-/* 文本颜色 */
-.text-white { color: #ffffff; }
-.text-gray-500 { color: #6b7280; }
-.text-gray-600 { color: #4b5563; }
-.text-gray-700 { color: #374151; }
-.text-gray-800 { color: #1f2937; }
-.text-indigo-500 { color: #6366f1; }
-.text-indigo-600 { color: #4f46e5; }
-.text-indigo-700 { color: #4338ca; }
-
-/* 交互样式 */
-.w-full { width: 100%; }
-.max-w-7xl { max-width: 80rem; }
-.max-w-xs { max-width: 20rem; }
-.h-4 { height: 1rem; }
-.h-8 { height: 2rem; }
-.h-16 { height: 4rem; }
-.h-24 { height: 6rem; }
-.w-4 { width: 1rem; }
-.w-8 { width: 2rem; }
-.w-24 { width: 6rem; }
-.flex { display: flex; }
-.items-center { align-items: center; }
-.justify-between { justify-content: space-between; }
-.justify-end { justify-content: flex-end; }
-.space-x-6 > * + * { margin-left: 1.5rem; }
-.space-y-4 > * + * { margin-top: 1rem; }
-.space-y-6 > * + * { margin-top: 1.5rem; }
-.sticky { position: sticky; }
-.top-0 { top: 0px; }
-.z-30 { z-index: 30; }
-.overflow-hidden { overflow: hidden; }
-.transition-colors { transition-property: color, background-color; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
-
-/* 悬停样式 */
-.hover\:bg-indigo-50:hover { background-color: #eef2ff; }
-.hover\:bg-indigo-700:hover { background-color: #4338ca; }
-.hover\:text-indigo-600:hover { color: #4f46e5; }
-.hover\:text-indigo-700:hover { color: #4338ca; }
-
-/* 焦点样式 */
-.focus\:outline-none:focus { outline: 2px solid transparent; outline-offset: 2px; }
-.focus\:ring-1:focus { ring-width: 1px; }
-.focus\:ring-indigo-500:focus { ring-color: #6366f1; }
-</style>
