@@ -28,97 +28,133 @@
       </div>
     </header>
 
-    <!-- 主体内容区（带响应式适配） -->
+    <!-- 主体内容区 - 优化间距和响应式 -->
     <div class="flex flex-1 overflow-hidden">
-      <!-- 左侧侧边栏：响应式隐藏/显示 -->
-      <aside class="w-72 bg-gray-50 border-r border-gray-200 overflow-y-auto hidden lg:block">
-        <div class="p-4 border-b border-gray-200">
-          <button class="w-full text-sm px-3 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 duration-200 hover:scale-[1.02] flex items-center justify-center gap-2 mb-4">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <!-- 左侧侧边栏 - 优化样式和动效 -->
+      <aside class="w-72 bg-white border-r border-slate-200 overflow-y-auto hidden lg:block transition-all duration-300">
+        <div class="p-5">
+          <!-- 新建项目按钮 - 优化视觉 -->
+          <button
+            @click="goToNewProject"
+            class="w-full text-sm px-4 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 duration-200 hover:shadow-md flex items-center justify-center gap-2 mb-5 transform hover:scale-[1.01] active:scale-[0.99]">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
-            新建笔记
+            新建项目
           </button>
-          <div class="mb-3">
-            <input
-              type="text"
-              placeholder="Find a note..."
-              class="w-full text-sm px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-indigo-500"
-            />
+          
+          <!-- 搜索框 - 优化样式 -->
+          <div class="mb-4">
+            <div class="relative">
+              <svg class="absolute left-2.5 top-2.5 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Find a project..."
+                class="w-full text-sm pl-9 pr-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+              />
+            </div>
           </div>
+          
+          <!-- 最近项目列表 - 优化交互 -->
           <div class="space-y-1">
             <div
               v-for="repo in recentRepos"
               :key="repo.id"
-              class="flex items-center gap-2 text-sm text-gray-700 hover:text-indigo-600 cursor-pointer py-1"
+              class="flex items-center gap-2 text-sm text-gray-700 hover:bg-indigo-50 cursor-pointer py-2 px-3 rounded-md transition-colors"
             >
-              <span>{{ repo.name }}</span>
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span class="truncate">{{ repo.name }}</span>
             </div>
           </div>
-          <button class="text-xs text-gray-500 hover:text-indigo-600 mt-4">Show more</button>
+          
+          <button class="text-xs text-gray-500 hover:text-indigo-600 mt-4 flex items-center gap-1 transition-colors">
+            <span>Show more</span>
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
         </div>
       </aside>
 
-      <!-- 中间主内容区：自适应宽度 -->
-      <main class="flex-1 overflow-y-auto bg-gray-50 p-6 lg:px-8">
+      <!-- 中间主内容区 - 优化视觉层次 -->
+      <main class="flex-1 overflow-y-auto bg-slate-50 p-4 sm:p-6 lg:px-8 lg:py-6">
         <div class="max-w-5xl mx-auto">
-          <!-- 移动端侧边栏切换按钮 -->
-          <button class="lg:hidden mb-4 text-sm px-3 py-2 bg-white border border-gray-200 rounded-md hover:bg-gray-100">
-            ☰ Repositories
+          <!-- 移动端侧边栏切换按钮 - 优化样式 -->
+          <button class="lg:hidden mb-5 text-sm px-4 py-2 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 shadow-sm transition-colors flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            Repositories
           </button>
 
           <div class="space-y-6">
-            <!-- 笔记动态卡片 -->
+            <!-- 笔记动态卡片 - 优化卡片样式 -->
             <div
               v-for="item in feedItems"
               :key="item.id"
-              class="bg-white border border-gray-200 rounded-md overflow-hidden"
+              class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
             >
-              <div class="bg-gray-50 px-4 py-2 border-b border-gray-200 flex items-center justify-between">
+              <div class="bg-slate-50 px-5 py-3 border-b border-slate-200 flex items-center justify-between">
                 <div class="flex items-center gap-2 text-sm text-gray-700">
-                  <svg class="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 16 16">
+                  <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h7a2.5 2.5 0 0 1 2.5 2.5v11a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-11zM4.5 1a1.5 1.5 0 0 0-1.5 1.5v11a1.5 1.5 0 0 0 1.5 1.5h7a1.5 1.5 0 0 0 1.5-1.5v-11a1.5 1.5 0 0 0-1.5-1.5h-7z" />
                   </svg>
                   <span class="font-medium">{{ item.repo }}</span>
                   <span class="text-gray-500">updated</span>
                 </div>
-                <button class="text-gray-400 hover:text-gray-600">
-                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+                <button class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-slate-100 transition-colors">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M3 6a.75.75 0 0 1 .75-.75h8.5a.75.75 0 0 1 0 1.5h-8.5A.75.75 0 0 1 3 6Zm0 4a.75.75 0 0 1 .75-.75h8.5a.75.75 0 0 1 0 1.5h-8.5A.75.75 0 0 1 3 10Z" />
                   </svg>
                 </button>
               </div>
-              <div class="p-4">
-                <div class="flex items-center gap-1 text-xs text-gray-500 mb-2">
-                  <span class="bg-green-100 text-green-600 px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 16 16">
+              <div class="p-5">
+                <div class="flex items-center gap-2 text-xs text-gray-500 mb-3">
+                  <span class="bg-green-50 text-green-700 px-2 py-1 rounded-full flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 16 16">
                       <path d="M8 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" />
                       <path fill-rule="evenodd" d="M1.5 8a6.5 6.5 0 1 1 13 0 6.5 6.5 0 0 1-13 0ZM8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0Z" />
                     </svg>
                     {{ item.time }}
                   </span>
                 </div>
-                <h3 class="text-base font-semibold text-gray-800 mb-2">{{ item.title }}</h3>
-                <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ item.description }}</p>
-                <button class="text-xs text-indigo-600 hover:underline">Read more</button>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2 hover:text-indigo-600 transition-colors cursor-pointer">{{ item.title }}</h3>
+                <p class="text-sm text-gray-600 mb-4 line-clamp-2">{{ item.description }}</p>
+                <button class="text-sm text-indigo-600 hover:text-indigo-700 hover:underline flex items-center gap-1 transition-colors">
+                  <span>Read more</span>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </button>
               </div>
             </div>
 
-            <!-- 推荐笔记 -->
-            <div class="bg-white border border-gray-200 rounded-md overflow-hidden">
-              <div class="px-4 py-2 border-b border-gray-200 flex items-center justify-between">
-                <span class="text-sm font-medium text-gray-700">推荐笔记</span>
-                <a href="#" class="text-xs text-indigo-600 hover:underline">查看更多</a>
+            <!-- 推荐笔记 - 优化卡片样式 -->
+            <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+              <div class="px-5 py-3 border-b border-slate-200 flex items-center justify-between">
+                <span class="text-sm font-medium text-gray-800">推荐笔记</span>
+                <a href="#" class="text-sm text-indigo-600 hover:text-indigo-700 hover:underline flex items-center gap-1 transition-colors">
+                  <span>查看更多</span>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </a>
               </div>
-              <div class="p-4">
-                <div class="space-y-3">
-                  <div v-for="note in recommendedNotes" :key="note.id" class="flex items-center gap-2">
-                    <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="currentColor" viewBox="0 0 16 16">
-                      <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h7a2.5 2.5 0 0 1 2.5 2.5v11a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-11zM4.5 1a1.5 1.5 0 0 0-1.5 1.5v11a1.5 1.5 0 0 0 1.5 1.5h7a1.5 1.5 0 0 0 1.5-1.5v-11a1.5 1.5 0 0 0-1.5-1.5h-7z" />
-                    </svg>
+              <div class="p-5">
+                <div class="space-y-4">
+                  <div v-for="note in recommendedNotes" :key="note.id" class="flex items-center gap-3 group">
+                    <div class="w-9 h-9 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 flex-shrink-0 group-hover:bg-indigo-100 transition-colors">
+                      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h7a2.5 2.5 0 0 1 2.5 2.5v11a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-11zM4.5 1a1.5 1.5 0 0 0-1.5 1.5v11a1.5 1.5 0 0 0 1.5 1.5h7a1.5 1.5 0 0 0 1.5-1.5v-11a1.5 1.5 0 0 0-1.5-1.5h-7z" />
+                      </svg>
+                    </div>
                     <div class="flex-1">
-                      <div class="text-sm font-medium text-gray-800 hover:text-indigo-600 cursor-pointer">{{ note.title }}</div>
-                      <div class="text-xs text-gray-500">{{ note.category }} · {{ note.updatedAt }}</div>
+                      <div class="text-sm font-medium text-gray-800 hover:text-indigo-600 cursor-pointer transition-colors">{{ note.title }}</div>
+                      <div class="text-xs text-gray-500 mt-0.5">{{ note.category }} · {{ note.updatedAt }}</div>
                     </div>
                   </div>
                 </div>
@@ -128,20 +164,33 @@
         </div>
       </main>
 
-      <!-- 右侧侧边栏：响应式隐藏/显示 -->
-      <aside class="w-80 bg-white border-l border-gray-200 overflow-y-auto hidden xl:block">
-        <div class="p-4 sticky top-0 bg-white">
-          <h3 class="text-sm font-semibold text-gray-800 mb-3">最近更新</h3>
-          <div class="space-y-3">
-            <div v-for="log in changelog" :key="log.id" class="flex gap-2">
-              <div class="w-1.5 h-1.5 rounded-full bg-gray-300 mt-1.5 flex-shrink-0"></div>
-              <div>
-                <div class="text-xs text-gray-500 mb-1">{{ log.time }}</div>
-                <p class="text-xs text-gray-700">{{ log.content }}</p>
+      <!-- 右侧侧边栏 - 优化样式 -->
+      <aside class="w-80 bg-white border-l border-slate-200 overflow-y-auto hidden xl:block transition-all duration-300">
+        <div class="p-5 sticky top-0 bg-white">
+          <h3 class="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+            </svg>
+            最近更新
+          </h3>
+          <div class="space-y-4">
+            <div v-for="log in changelog" :key="log.id" class="flex gap-3">
+              <div class="flex flex-col items-center">
+                <div class="w-2 h-2 rounded-full bg-indigo-500 mt-1 flex-shrink-0"></div>
+                <div class="h-full w-0.5 bg-slate-200 mt-1"></div>
+              </div>
+              <div class="pb-1">
+                <div class="text-xs text-gray-500 mb-1 font-medium">{{ log.time }}</div>
+                <p class="text-sm text-gray-700 leading-relaxed">{{ log.content }}</p>
               </div>
             </div>
           </div>
-          <button class="text-xs text-indigo-600 hover:underline mt-3">查看全部更新 →</button>
+          <button class="text-sm text-indigo-600 hover:text-indigo-700 hover:underline mt-4 flex items-center gap-1 transition-colors">
+            <span>查看全部更新</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </button>
         </div>
       </aside>
     </div>
@@ -152,8 +201,13 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getUserInfo } from '@/api/user.js'
+import { toastError } from '@/utils/toast.js'
 
 const router = useRouter()
+
+const goToNewProject = () => {
+    router.push('/project/new')
+}
 
 const userInfo = ref({
     username: 'xxx',
@@ -168,10 +222,11 @@ const fetchUserInfo = async () => {
             userInfo.value.username = res.username
             userInfo.value.avatar = res.avatar
         } else {
-            toastError(data.message)
+            toastError(res.message || '获取用户信息失败')
         }
     } catch (error) {
         console.log('获取用户信息失败：', error)
+        toastError('网络异常，请稍后重试')
     }
 }
 

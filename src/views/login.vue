@@ -243,7 +243,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router' // 导入路由跳转工具
+import { useRouter } from 'vue-router'
 import { login, register } from '@/api/user.js'
 import { toastSuccess, toastError, toastWarn, toastInfo } from '@/utils/toast'
 
