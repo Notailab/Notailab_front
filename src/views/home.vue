@@ -62,6 +62,7 @@
             <div
               v-for="pro in projects"
               :key="pro.id"
+              @click="navigateToProject(pro)" 
               class="flex items-center gap-2 text-sm text-gray-700 hover:bg-indigo-50 cursor-pointer py-2 px-3 rounded-md transition-colors"
             >
               <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -254,6 +255,16 @@ onMounted(() => {
     fetchUserInfo()
     fetchProjectTitles()
 })
+
+const navigateToProject = (pro) => {
+    router.push({
+        name: 'project',
+        params: {
+            username: userInfo.value.username,
+            projecttitle: pro.title
+        }
+    })
+}
 
 // 动态流内容
 const feedItems = ref([
