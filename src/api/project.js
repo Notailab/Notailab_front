@@ -7,3 +7,10 @@ export function createProject(data) {
         data
     })
 }
+
+export function projectTitles() {
+    return request({
+        url: '/project/titles',
+        method: 'post',
+    })
+}

@@ -42,7 +42,7 @@
             </svg>
             新建项目
           </button>
-          
+
           <!-- 搜索框 - 优化样式 -->
           <div class="mb-4">
             <div class="relative">
@@ -56,27 +56,21 @@
               />
             </div>
           </div>
-          
+
           <!-- 最近项目列表 - 优化交互 -->
           <div class="space-y-1">
             <div
-              v-for="repo in recentRepos"
-              :key="repo.id"
+              v-for="pro in projects"
+              :key="pro.id"
               class="flex items-center gap-2 text-sm text-gray-700 hover:bg-indigo-50 cursor-pointer py-2 px-3 rounded-md transition-colors"
             >
               <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              <span class="truncate">{{ repo.name }}</span>
+              <span class="truncate">{{ pro.title }}</span>
             </div>
           </div>
-          
-          <button class="text-xs text-gray-500 hover:text-indigo-600 mt-4 flex items-center gap-1 transition-colors">
-            <span>Show more</span>
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
+
         </div>
       </aside>
 
@@ -202,6 +196,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getUserInfo } from '@/api/user.js'
 import { toastError } from '@/utils/toast.js'
+import { projectTitles } from '@/api/project.js'
 
 const router = useRouter()
 
@@ -230,16 +225,35 @@ const fetchUserInfo = async () => {
     }
 }
 
+// 最近编辑的笔记/仓库
+const projects = ref([])
+
+const fetchProjectTitles = async () => {
+    try {
+        const res = await projectTitles()
+
+        if (res.code === 200) {
+            const formattedTitles = res.titles.map((title, index) => ({
+                id: index + 1,
+                title: title
+            }))
+            console.log(formattedTitles)
+            // 赋值给响应式数据
+            projects.value = formattedTitles
+        } else {
+            toastError(res.message || '获取用户项目失败')
+        }
+    } catch (error) {
+        console.log('获取用户信息失败：', error)
+        toastError('网络异常，请稍后重试')
+    }
+
+}
+
 onMounted(() => {
     fetchUserInfo()
+    fetchProjectTitles()
 })
-
-// 最近编辑的笔记/仓库
-const recentRepos = ref([
-    { id: 1, name: 'Go 编程基础' },
-    { id: 2, name: 'Vue3 组合式 API 最佳实践' },
-    { id: 3, name: 'Notailab' },
-])
 
 // 动态流内容
 const feedItems = ref([

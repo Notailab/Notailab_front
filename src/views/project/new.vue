@@ -47,10 +47,13 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">所有者 *</label>
                 <div class="flex items-center border border-gray-200 rounded-md px-2 py-1.5 bg-gray-50">
-                <svg class="w-4 h-4 text-purple-600 mr-1" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M2.5 3.5a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 01-1 1h-2a1 1 0 01-1-1v-2zM2.5 10.5a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 01-1 1h-2a1 1 0 01-1-1v-2zM9.5 3.5a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 01-1 1h-2a1 1 0 01-1-1v-2zM9.5 10.5a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 01-1 1h-2a1 1 0 01-1-1v-2z"/>
-                </svg>
-                <span class="text-sm font-medium">Notailab</span>
+                <img 
+                    v-if="userInfo.avatar" 
+                    :src="userInfo.avatar" 
+                    alt="用户头像"
+                    class="avatar w-5 h-5 mr-2"
+                />
+                <span class="text-sm font-medium">{{ userInfo.username }}</span>
                 <svg class="w-4 h-4 text-gray-500 ml-1" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
                 </svg>

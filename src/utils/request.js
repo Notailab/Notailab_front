@@ -45,7 +45,7 @@ service.interceptors.response.use(
         // 服务器返回了响应（4xx/5xx）
         const { status, data } = error.response
         message = `${status} - ${data.message || '服务器错误'}`
-        
+
         // 针对常见状态码的特殊处理
         switch (status) {
             case 400:
