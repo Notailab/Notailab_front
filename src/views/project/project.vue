@@ -33,7 +33,6 @@
             <template v-for="item in coreNavItems" :key="item.key">
             <a 
                 :href="item.href" 
-                <!-- 2. 保留 nav-item 基类 + active 动态类，移除标签内的固定颜色 -->
                 class="nav-item flex items-center space-x-1.5 px-3 py-2 text-sm"
                 :class="{ active: item.active }"
             >
@@ -143,7 +142,7 @@
           <textarea 
             v-model="noteContent" 
             class="w-full h-[500px] p-2 border rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 font-mono"
-          />
+          ></textarea>
           <button class="mt-4 p-2 border rounded bg-blue-500 text-white hover:bg-blue-600 transition-colors">保存笔记</button>
         </div>
 
