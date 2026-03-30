@@ -14,3 +14,10 @@ export function projectTitles() {
         method: 'post',
     })
 }
+
+export function projects() {
+    return request({
+        url: '/project/projects',
+        method: 'post',
+    })
+}

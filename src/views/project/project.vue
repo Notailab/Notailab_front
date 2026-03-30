@@ -1,353 +1,390 @@
 <template>
-  <div class="h-screen flex flex-col bg-gray-50 antialiased">
-
-    <!-- 顶部标题栏 -->
-    <header class="bg-white shadow sticky top-0 z-30">
-      <div class="mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-14">
-          <div class="flex items-center">
-            <svg class="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-            </svg>
-            <span class="ml-2 text-xl font-semibold text-gray-800">Notailab</span>
+  <div class="min-h-screen bg-gray-50 flex flex-col relative">
+    <!-- 顶部导航栏（不变） -->
+    <header class="bg-white border-b border-gray-100">
+      <div class="flex items-center justify-between px-6 py-3">
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 bg-emerald-700 rounded flex items-center justify-center">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <span class="font-semibold text-gray-900 text-sm">Notailab</span>
           </div>
+          <div class="flex items-center gap-4">
+            <button class="text-emerald-700 text-sm font-medium border-b-2 border-emerald-700 pb-1">Dashboard</button>
+            <button class="text-gray-500 text-sm hover:text-gray-700">Stats</button>
+            <button class="text-gray-500 text-sm hover:text-gray-700">Settings</button>
+          </div>
+        </div>
 
-          <!-- 右侧导航 -->
-          <div class="flex items-center space-x-4">
-            <div class="flex items-center">
-                <img 
-                    v-if="userInfo.avatar" 
-                    :src="userInfo.avatar" 
-                    alt="用户头像"
-                    class="avatar w-8 h-8"
-                />
-              <span class="ml-2 text-sm font-medium text-gray-700">{{ userInfo.username }}</span>
+        <div class="flex items-center gap-2 text-xs text-gray-500">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+          </svg>
+          <span>{{ projectTitle }}</span>
+          <span>/</span>
+          <span class="text-gray-900 font-medium">{{ currentFile.name || 'Untitled' }}</span>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <div class="relative">
+            <input
+              type="text"
+              placeholder="Search documentation..."
+              class="pl-10 pr-4 py-2 bg-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 w-64"
+            />
+            <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <button class="p-2 text-gray-500 hover:bg-gray-100 rounded-lg">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+          </button>
+          <button class="p-2 text-gray-500 hover:bg-gray-100 rounded-lg">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </button>
+          <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-200">
+            <img v-if="userInfo.avatar" :src="userInfo.avatar" class="w-full h-full object-cover">
+            <div v-else class="w-full h-full flex items-center justify-center text-gray-600 text-sm">
+              {{ userInfo.username?.charAt(0) || 'U' }}
             </div>
           </div>
         </div>
-
-        <!-- 第二行：动态渲染的项目操作导航 -->
-        <div class="py-1 overflow-x-auto scrollbar-hide">
-          <nav class="flex items-center space-x-1 sm:space-x-4 px-1">
-            <!-- 核心操作组 -->
-            <template v-for="item in coreNavItems" :key="item.key">
-            <a 
-                :href="item.href" 
-                class="nav-item flex items-center space-x-1.5 px-3 py-2 text-sm"
-                :class="{ active: item.active }"
-            >
-                <!-- 移除 text-gray-600，颜色由父级 .nav-item/.active 控制 -->
-                <div v-html="item.icon" class="w-5 h-5"></div>
-                <span>{{ item.label }}</span>
-                <span v-if="item.badgeCount" class="bg-gray-200 text-gray-800 rounded-full px-1.5 py-0 text-xs">
-                {{ item.badgeCount }}
-                </span>
-            </a>
-            </template>
-
-            <!-- 分隔线 -->
-            <span class="h-5 w-px bg-gray-200 mx-1"></span>
-
-            <!-- 次要操作组 -->
-            <template v-for="item in secondaryNavItems" :key="item.key">
-            <a 
-                :href="item.href" 
-                class="nav-item flex items-center space-x-1.5 px-3 py-2 text-sm"
-                :class="{ active: item.active }"
-            >
-                <!-- 移除 text-gray-600 -->
-                <div v-html="item.icon" class="w-5 h-5"></div>
-                <span>{{ item.label }}</span>
-            </a>
-            </template>
-          </nav>
-        </div>
-
       </div>
     </header>
 
-    <!-- 主体布局：左侧文件夹栏 + 中间工作区 -->
     <div class="flex flex-1 overflow-hidden">
-      <!-- 左侧文件夹栏 -->
-      <aside class="w-64 bg-white border-r overflow-y-auto p-4">
-        <!-- 搜索框 -->
-        <input 
-          placeholder="搜索文件" 
-          class="w-full mb-4 p-2 border rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-        />
-        
-        <!-- 静态文件夹/文件列表 -->
-        <div class="space-y-1 text-sm">
-          <div 
-            @click="activeView = 'folder'"
-            :class="['p-2 rounded cursor-pointer transition-colors', activeView === 'folder' ? 'bg-blue-50 text-blue-600' : 'hover:bg-gray-100']"
+      <!-- 左侧边栏（不变） -->
+      <aside class="w-56 bg-white border-r border-gray-100 flex flex-col">
+        <div class="p-4">
+          <button class="w-full flex items-center justify-center gap-2 bg-emerald-700 text-white py-2 rounded hover:bg-emerald-800 transition text-sm"
+            @click="handleNewFile"
           >
-            基础语法
-          </div>
-          <div class="p-2 rounded hover:bg-gray-100 cursor-pointer">流程控制</div>
-          <div class="p-2 rounded hover:bg-gray-100 cursor-pointer">学习计划.md</div>
-          <div class="p-2 rounded hover:bg-gray-100 cursor-pointer ml-4">变量与数据类型.py</div>
-          <div class="p-2 rounded hover:bg-gray-100 cursor-pointer ml-4">基础语法笔记.md</div>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            New File
+          </button>
+        </div>
+        <nav class="flex-1 p-4 border-t border-gray-100 overflow-y-auto">
+          <button
+            v-for="file in fileList"
+            :key="file.file_id"
+            @click="handleOpenFile(file)"
+            class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm"
+            :class="currentFile.file_id === file.file_id ? 'font-medium bg-gray-50' : 'text-gray-600 hover:bg-gray-50'"
+          >
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span class="truncate">{{ file.name }}</span>
+          </button>
+          <div v-if="fileList.length === 0" class="text-xs text-gray-400 text-center py-4">No files yet</div>
+        </nav>
+        <div class="p-4 border-t border-gray-100 space-y-3">
+          <button class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 text-sm">Help Center</button>
+          <button class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 text-sm">Logout</button>
         </div>
       </aside>
 
-      <!-- 中间工作区 -->
-      <main class="flex-1 overflow-y-auto p-6 bg-white">
-        <!-- 1. 文件夹列表视图（默认显示） -->
-        <div v-if="activeView === 'folder'">
-          <div class="mb-4 flex justify-between items-center">
-            <h2 class="text-lg font-medium text-gray-800">基础语法</h2>
-            <div class="flex gap-2">
-              <button class="p-2 border rounded text-sm hover:bg-gray-50 transition-colors">新建文件夹</button>
-              <button class="p-2 border rounded text-sm bg-blue-500 text-white hover:bg-blue-600 transition-colors">新建笔记</button>
+      <!-- 右侧主区域 -->
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- 工具栏 -->
+        <div class="bg-white border-b border-gray-100 px-6 py-2 flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <button
+              v-if="currentFile?.file_id"
+              @click="handleDeleteFile"
+              class="px-3 py-1 bg-gray-100 text-gray-600 rounded text-sm flex items-center justify-center hover:text-red-500 transition"
+              title="删除当前文件"
+            >
+              <span v-html="toolbarIcons.delete"></span>
+            </button>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2">
+              <template v-for="(t, idx) in editorToolbars" :key="idx">
+                <button
+                  v-if="t !== '-' && t !== '='"
+                  @click="handleToolbarClick(t)"
+                  class="px-3 py-1 bg-gray-100 text-gray-600 rounded text-sm flex items-center justify-center"
+                >
+                  <span v-html="toolbarIcons[t] || t"></span>
+                </button>
+                <div v-else-if="t === '-'" class="w-px h-6 bg-gray-200 mx-1"></div>
+                <div v-else-if="t === '='" class="w-4"></div>
+              </template>
+            </div>
+            <button @click="handleSave" class="px-4 py-1.5 bg-emerald-700 text-white rounded text-sm">Save</button>
+          </div>
+        </div>
+
+        <!-- ====================== 核心布局 ====================== -->
+        <div class="flex-1 p-6 overflow-hidden">
+          <!-- AI 关闭：编辑器居中 -->
+          <div v-if="!showAIChat" class="h-full flex justify-center">
+            <div :class="['w-full', centerEditorMaxClass, 'bg-white', 'rounded-lg', 'h-full']">
+              <MdEditor
+                ref="mdEditorRef"
+                v-model="editorContent"
+                :style="{ height: 'calc(100vh - 14rem)' }"
+                theme="light" language="zh-CN" :toolbars="[]" footers="" :preview="isPreview"
+              />
             </div>
           </div>
-          
-          <!-- 静态文件表格 -->
-          <table class="w-full border-collapse">
-            <thead>
-              <tr class="border-b bg-gray-50">
-                <th class="text-left p-2 text-sm font-medium text-gray-700">名称</th>
-                <th class="text-left p-2 text-sm font-medium text-gray-700">类型</th>
-                <th class="text-left p-2 text-sm font-medium text-gray-700">创建时间</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr 
-                @click="activeView = 'file'"
-                class="border-b hover:bg-gray-50 cursor-pointer transition-colors"
-              >
-                <td class="p-2 text-sm text-gray-800">变量与数据类型.py</td>
-                <td class="p-2 text-sm text-gray-600">文件</td>
-                <td class="p-2 text-sm text-gray-500">2026-02-15</td>
-              </tr>
-              <tr 
-                @click="activeView = 'note'"
-                class="border-b hover:bg-gray-50 cursor-pointer transition-colors"
-              >
-                <td class="p-2 text-sm text-gray-800">基础语法笔记.md</td>
-                <td class="p-2 text-sm text-gray-600">笔记</td>
-                <td class="p-2 text-sm text-gray-500">2026-02-15</td>
-              </tr>
-            </tbody>
-          </table>
+
+          <!-- AI 打开：编辑器 + AI 左右并排 -->
+          <div v-else class="h-full flex items-stretch gap-3" id="drag-container">
+            <div class="bg-white rounded-lg h-full" :style="{ width: `${editorWidth}%`, flexShrink: 0 }">
+              <MdEditor
+                ref="mdEditorRef"
+                v-model="editorContent"
+                :style="{ height: 'calc(100vh - 14rem)' }"
+                theme="light" language="zh-CN" :toolbars="[]" footers="" :preview="isPreview"
+              />
+            </div>
+
+            <div class="w-1 bg-gray-200 hover:bg-emerald-500 cursor-col-resize" @mousedown="startDrag"></div>
+
+            <div class="flex-1 bg-white rounded-lg h-full flex flex-col overflow-hidden">
+              <div class="px-4 py-3 border-b border-gray-100 bg-emerald-50 flex justify-between items-center">
+                <h3 class="text-sm font-semibold text-emerald-800">AI Assistant</h3>
+                <button @click="showAIChat = false" class="text-gray-500">✕</button>
+              </div>
+              <div class="flex-1 p-4 overflow-y-auto space-y-4">
+                <div v-for="(msg, idx) in messages" :key="idx" class="flex flex-col" :class="msg.role === 'user' ? 'items-end' : 'items-start'">
+                  <div class="max-w-[85%] px-3 py-2 rounded-lg text-sm"
+                    :class="msg.role === 'user' ? 'bg-emerald-600 text-white rounded-br-none' : 'bg-gray-100 text-gray-800 rounded-bl-none'">
+                    {{ msg.content }}
+                  </div>
+                </div>
+                <div v-if="loading" class="text-sm text-gray-500">Thinking...</div>
+              </div>
+              <div class="p-3 border-t border-gray-100">
+                <div class="flex gap-2">
+                  <input v-model="inputMsg" @keyup.enter="sendMessage" placeholder="Enter question..." class="flex-1 px-3 py-2 bg-gray-100 rounded-lg text-sm outline-none">
+                  <button @click="sendMessage" :disabled="!inputMsg.trim()" class="px-3 py-2 bg-emerald-600 text-white rounded-lg text-sm">Send</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- 2. 笔记编辑视图 -->
-        <div v-if="activeView === 'note'">
-          <input 
-            v-model="noteTitle" 
-            class="w-full mb-4 p-2 border rounded text-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
-          />
-          <textarea 
-            v-model="noteContent" 
-            class="w-full h-[500px] p-2 border rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 font-mono"
-          ></textarea>
-          <button class="mt-4 p-2 border rounded bg-blue-500 text-white hover:bg-blue-600 transition-colors">保存笔记</button>
+        <!-- 底部状态栏 -->
+        <div class="bg-gray-50 border-t border-gray-100 px-6 py-2 text-xs text-gray-500">
+          <div class="flex justify-between">
+            <div>Saved to Cloud</div>
+            <div>1,248 Words</div>
+          </div>
         </div>
-
-        <!-- 3. 文件预览视图 -->
-        <div v-if="activeView === 'file'">
-          <h2 class="text-lg font-medium mb-4 text-gray-800">变量与数据类型.py</h2>
-          <pre class="w-full p-4 bg-gray-100 rounded text-sm overflow-auto max-h-[500px] font-mono">{{ fileContent }}</pre>
-          <button class="mt-4 p-2 border rounded bg-blue-500 text-white hover:bg-blue-600 transition-colors">下载文件</button>
-        </div>
-      </main>
+      </div>
     </div>
+
+    <!-- 右下角 AI 按钮：关闭时显示 -->
+    <button
+      v-if="!showAIChat"
+      @click="showAIChat = true"
+      class="fixed right-6 bottom-6 w-14 h-14 bg-emerald-600 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-emerald-700 z-50"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v9a2 2 0 01-2 2h-4l-4 4z" />
+      </svg>
+    </button>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { getUserInfo } from '@/api/user.js'
+import { useRoute } from 'vue-router'
+import { MdEditor } from 'md-editor-v3'
+import 'md-editor-v3/lib/style.css'
+import { useNoteEditor } from '@/composables/useNoteEditor'
+import { useUserInfo } from '@/composables/useUserInfo'
+import { createFile } from '@/api/file'
+import { ref, onMounted, onUnmounted, nextTick, computed } from 'vue'
+import { toastSuccess, toastError } from '@/utils/toast'
 
-const router = useRouter()
+const route = useRoute()
+const projectTitle = route.params.projecttitle
+const projectId = route.params.projectid
 
-const userInfo = ref({
-    username: 'xxx',
-    avatar: '',
+const { fileList, currentFile, openFile, saveFile, fetchFiles, removeFile } = useNoteEditor()
+const { userInfo, fetchUserInfo } = useUserInfo()
+fetchUserInfo()
+
+const editorContent = ref('')
+const showAIChat = ref(false)
+const editorWidth = ref(65)
+const isPreview = ref(false)
+const mdEditorRef = ref(null)
+const editorToolbars = [
+  'bold', 'italic', 'underline', '-',
+  'unorderedList', 'orderedList', '-',
+  'code', 'codeRow', 'link', 'image', 'table', '-',
+  'preview'
+]
+
+const handleToolbarClick = async (key) => {
+  try {
+    if (key === 'preview') {
+      return togglePreview()
+    }
+
+    const editor = mdEditorRef.value
+    if (!editor) {
+      toastError('编辑器实例不可用')
+      return
+    }
+
+    if (typeof editor.execCommand === 'function') {
+      editor.execCommand(key)
+      return
+    }
+    if (typeof editor.command === 'function') {
+      editor.command(key)
+      return
+    }
+    if (typeof editor[key] === 'function') {
+      editor[key]()
+      return
+    }
+
+    toastError('该工具暂不支持：' + key)
+  } catch (err) {
+    toastError('工具执行出错：' + err)
+  }
+}
+
+const centerEditorMaxClass = computed(() => {
+  return isPreview.value ? 'max-w-[1800px]' : 'max-w-4xl'
 })
 
-const fetchUserInfo = async () => {
-    try {
-        const res = await getUserInfo()
+const toolbarIcons = {
+  bold: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 4h7a4 4 0 010 8H6z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 12h8a4 4 0 010 8H6z"></path></svg>',
+  italic: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 4h6"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 20h6"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 4L10 20"></path></svg>',
+  underline: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 4v6a6 6 0 0012 0V4"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 20h16"></path></svg>',
+  unorderedList: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 6h13M8 12h13M8 18h13" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M3 6h.01M3 12h.01M3 18h.01" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>',
+  orderedList: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 6h13M8 12h13M8 18h13" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M4 6v.01M4 12v.01M4 18v.01" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>',
+  code: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 18l6-6-6-6"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 6L2 12l6 6"></path></svg>',
+  codeRow: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="6" width="18" height="12" rx="2"></rect></svg>',
+  link: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14a5 5 0 007.07 0l1.42-1.42"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10a5 5 0 00-7.07 0L5.51 11.42"></path></svg>',
+  image: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="14" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5.2-5.2"></path></svg>',
+  table: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18M9 3v18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>',
+  preview: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 12s4-8 10-8 10 8 10 8-4 8-10 8S2 12 2 12z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></circle></svg>',
+  delete: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862A2 2 0 015.867 19.142L5 7m5 4v6m4-6v6M10 7h4"></path></svg>',
+}
 
-        if (res.code === 200) {
-            userInfo.value.username = res.username
-            userInfo.value.avatar = res.avatar
-        } else {
-            toastError(res.message || '获取用户信息失败')
-        }
-    } catch (error) {
-        console.log('获取用户信息失败：', error)
-        toastError('网络异常，请稍后重试')
+const togglePreview = async () => {
+  const editor = mdEditorRef.value
+  if (editor && typeof editor.togglePreview === 'function') {
+    editor.togglePreview()
+    await nextTick()
+    if (editor.preview !== undefined) {
+      isPreview.value = !!editor.preview
+      return
     }
+  }
+  isPreview.value = !isPreview.value
+}
+
+const handleNewFile = () => {
+  editorContent.value = ''
+  currentFile.value = {}
+}
+
+// 切换文件
+const handleOpenFile = (file) => {
+  openFile(file)
+  editorContent.value = file.content || ''
+}
+
+// 发布
+const handleSave = async () => {
+  if (currentFile.value?.file_id) {
+    await saveFile(editorContent.value || '')
+    toastSuccess('Saved')
+    return
+  }
+  const fullName = prompt('Enter file name (e.g. note.md)')
+  if (!fullName) return
+  try {
+    const res = await createFile({
+      project_id: +projectId, name: fullName, content: editorContent.value
+    })
+    if (res.code === 200) {
+      toastSuccess('Created')
+      await fetchFiles()
+    }
+  } catch (e) {
+    toastError('Failed' + e)
+  }
+}
+
+// ======================================
+// 删除当前文件
+// ======================================
+const handleDeleteFile = async () => {
+  if (!currentFile.value?.file_id) return
+
+  const confirmDel = confirm('确定要删除这个文件吗？此操作不可恢复！')
+  if (!confirmDel) return
+
+  try {
+    const res = await removeFile(currentFile.value.file_id)
+    if (res) {
+      editorContent.value = ''
+      currentFile.value = {}
+    } 
+  } catch (err) {
+    toastError('删除失败，请重试')
+  }
+}
+
+// 拖拽
+let isDragging = false
+const startDrag = () => (isDragging = true)
+const stopDrag = () => (isDragging = false)
+const onDrag = (e) => {
+  if (!isDragging) return
+  const container = document.getElementById('drag-container')
+  const rect = container.getBoundingClientRect()
+  const per = ((e.clientX - rect.left) / rect.width) * 100
+  editorWidth.value = Math.max(30, Math.min(75, per))
 }
 
 onMounted(() => {
-    fetchUserInfo()
+  window.addEventListener('mousemove', onDrag)
+  window.addEventListener('mouseup', stopDrag)
+})
+onUnmounted(() => {
+  window.removeEventListener('mousemove', onDrag)
+  window.removeEventListener('mouseup', stopDrag)
 })
 
-const coreNavItems = ref([
-    {
-        key: 'code',
-        label: '文件',
-        href: '#',     // 后续可改为 Vue 路由：/project/code
-        active: true,  // 是否为活跃项
-        badgeCount: 0, // 徽章数字（0 则不显示）
-        // SVG 图标字符串（Heroicons 图标，可直接替换）
-        icon: `
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-        </svg>
-        `
-    },
-    {
-        key: 'issues',
-        label: 'Issues',
-        href: '#',
-        active: false,
-        badgeCount: 5,
-        icon: `
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
-        </svg>
-        `
-    },
-    {
-        key: 'pull-requests',
-        label: 'Pull Requests',
-        href: '#',
-        active: false,
-        badgeCount: 2,
-        icon: `
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-        </svg>
-        `
-    },
-    {
-        key: 'actions',
-        label: 'Actions',
-        href: '#',
-        active: false,
-        badgeCount: 0,
-        icon: `
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-        `
-    },
-    {
-        key: 'wiki',
-        label: 'Wiki',
-        href: '#',
-        active: false,
-        badgeCount: 0,
-        icon: `
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-        </svg>
-        `
-    }
-])
+// AI 聊天
+const inputMsg = ref('')
+const messages = ref([{ role: 'ai', content: '你好！我是 AI 助手～' }])
+const loading = ref(false)
 
-const secondaryNavItems = ref([
-    {
-        key: 'monitor',
-        label: '监控',
-        href: '#',
-        active: false,
-        icon: `
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-        </svg>
-        `
-    },
-    {
-        key: 'stats',
-        label: '统计',
-        href: '#',
-        active: false,
-        icon: `
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z"></path>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z"></path>
-        </svg>
-        `
-    },
-    {
-        key: 'settings',
-        label: '设置',
-        href: '#',
-        active: false,
-        icon: `
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-        </svg>
-        `
-    }
-])
-
-// 静态视图切换（无后端逻辑）
-const activeView = ref('folder') // folder/note/file
-
-// 静态笔记内容（写死）
-const noteTitle = ref('基础语法笔记')
-const noteContent = ref(`# 变量与数据类型
-- 字符串：使用单引号/双引号包裹
-- 数字：整数、浮点数
-- 布尔值：True/False
-
-## 示例代码
-\`\`\`python
-name = "Python"
-age = 20
-is_study = True
-print(name, age, is_study)
-\`\`\``)
-
-// 静态文件内容（写死）
-const fileContent = ref(`name = "Python"
-age = 20
-is_study = True
-
-# 打印变量
-print("姓名：", name)
-print("年龄：", age)
-print("是否学习：", is_study)
-
-# 变量类型转换
-age_str = str(age)
-print(type(age_str))`)
+const sendMessage = async () => {
+  const msg = inputMsg.value.trim()
+  if (!msg) return
+  messages.value.push({ role: 'user', content: msg })
+  inputMsg.value = ''
+  loading.value = true
+  setTimeout(() => {
+    messages.value.push({ role: 'ai', content: `我收到了：${msg}` })
+    loading.value = false
+  }, 700)
+}
 </script>
 
-<style scoped>
-.nav-item {
-    color: #9ca3af; /* 浅灰色（你要的浅色） */
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-    cursor: pointer;
-    /* 关键：让子元素继承颜色（图标/SVG 也会继承） */
-    fill: currentColor;
-    stroke: currentColor;
-}
-
-/* active 样式：深色 + 蓝色下划线 */
-.nav-item.active {
-    color: #1f2937; /* 深灰色/黑色 */
-    font-weight: 600;
-    border-bottom-color: #4f46e5; /* 蓝色下划线 */
-}
-
-/* hover 效果 */
-.nav-item:not(.active):hover {
-    color: #4b5563; /* 比默认深一点的灰色，保留交互反馈 */
-    background-color: #f3f4f6;
-    border-radius: 6px;
-}
+<style>
+.md-editor { border: none !important; }
+.md-editor-wrapper { border: none !important; }
 </style>

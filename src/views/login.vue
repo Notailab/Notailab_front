@@ -1,394 +1,206 @@
 <template>
-  <!-- 主容器：渐变背景 + 网格纹理 + 动态光斑 -->
-  <div class="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-    <!-- 网格纹理背景（时尚低透明度网格） -->
-    <div class="absolute inset-0 bg-grid-white/[0.05] pointer-events-none"></div>
-    
-    <!-- 漂浮粒子装饰（小点点） -->
-    <div class="absolute inset-0 pointer-events-none">
-        <div 
-            v-for="particle in particles" 
-            :key="particle.id"
-            class="absolute rounded-full"
-            :style="{
-            top: `${particle.top}%`,
-            left: `${particle.left}%`,
-            width: `${particle.size}px`,
-            height: `${particle.size}px`,
-            backgroundColor: `rgba(255, 255, 255, ${particle.opacity})`
-            }"
-        ></div>
+  <div class="min-h-screen flex">
+    <!-- 左侧品牌介绍区 - 已完美居中 -->
+    <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-gray-50 to-green-50 relative">
+      <div class="absolute inset-0 flex items-center justify-center p-12">
+        <div class="max-w-md w-full">
+          <!-- Logo -->
+          <div class="flex items-center gap-3 mb-12">
+            <div class="w-8 h-8 bg-green-700 rounded flex items-center justify-center">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <span class="text-3xl font-bold text-gray-900">Notailab</span>
+          </div>
+
+          <!-- 核心文案 -->
+          <div class="space-y-4 mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 leading-tight">
+              The Digital Atelier for <span class="text-green-700">Curated Insights</span>.
+            </h1>
+            <p class="text-gray-600 text-sm leading-relaxed">
+              A high-productivity space designed to treat your information as exhibits. Professional, minimalist, and built for focused growth.
+            </p>
+          </div>
+
+          <!-- 功能卡片 -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded-lg border border-gray-100 shadow-sm">
+              <div class="text-green-600 mb-3">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+              </div>
+              <h3 class="font-medium text-gray-900 text-sm mb-1">AI Curation</h3>
+              <p class="text-xs text-gray-500">Intelligent summaries for your research archive.</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg border border-gray-100 shadow-sm">
+              <div class="text-gray-600 mb-3">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+              </div>
+              <h3 class="font-medium text-gray-900 text-sm mb-1">Deep Work</h3>
+              <p class="text-xs text-gray-500">Minimalist interface designed for pure focus.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 版权信息 -->
+      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-center text-gray-400 text-xs">
+        &copy; 2026 Notailab. All rights reserved.
+      </div>
     </div>
 
-    <!-- 登录/注册卡片：毛玻璃效果 -->
-    <div class="max-w-md w-full relative z-10">
-      <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl p-8 space-y-8 border border-white/20">
-        <!-- 头部：登录/注册标签切换 -->
-        <div class="text-center">
-          <!-- 图标 -->
-          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-indigo-600 text-white mb-4 shadow-lg">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-            </svg>
-          </div>
-          
-          <h2 class="text-3xl font-bold text-gray-900">Notailab</h2>
-          <!-- 标签切换 -->
-          <div class="flex justify-center mb-2">
-            <button 
-              @click="activeTab = 'login'"
-              class="px-6 py-1.5 rounded-t-lg text-lg font-medium transition-colors"
-              :class="activeTab === 'login' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-500 hover:text-gray-700'"
-            >
-              登录
-            </button>
-            <button 
-              @click="activeTab = 'register'"
-              class="px-6 py-1.5 rounded-t-lg text-lg font-medium transition-colors"
-              :class="activeTab === 'register' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-500 hover:text-gray-700'"
-            >
-              注册
-            </button>
-          </div>
-          <p class="mt-2 text-sm text-gray-600">
-            {{ activeTab === 'login' ? '登录后记录你的学习成长' : '注册账号开始使用' }}
-          </p>
+    <!-- 右侧登录注册区 -->
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-16 bg-white">
+      <div class="w-full max-w-sm">
+        <!-- 标签切换 -->
+        <div class="flex gap-6 mb-8">
+          <button 
+            @click="activeTab = 'login'"
+            class="text-xl font-bold transition-colors"
+            :class="activeTab === 'login' ? 'text-gray-900' : 'text-gray-400'"
+          >
+            Sign in
+          </button>
+          <button 
+            @click="activeTab = 'register'"
+            class="text-xl font-bold transition-colors"
+            :class="activeTab === 'register' ? 'text-gray-900' : 'text-gray-400'"
+          >
+            Sign up
+          </button>
         </div>
 
         <!-- 登录表单 -->
-        <form v-if="activeTab === 'login'" class="space-y-6" @submit.prevent="handleLogin">
-          <div class="space-y-4">
-            <!-- 用户名输入框 -->
-            <div>
-              <label for="username" class="block text-sm font-medium text-gray-700 mb-1">用户名</label>
-              <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
-                  </svg>
-                </div>
-                <input
-                  id="username"
-                  type="text"
-                  v-model="loginForm.username"
-                  class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white/50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
-                  placeholder="请输入用户名"
-                  required
-                />
-              </div>
-            </div>
-
-            <!-- 密码输入框 -->
-            <div>
-              <label for="password" class="block text-sm font-medium text-gray-700 mb-1">密码</label>
-              <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8 0H7v2h6V9z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <input
-                  id="password"
-                  type="password"
-                  v-model="loginForm.password"
-                  class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white/50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
-                  placeholder="请输入密码"
-                  required
-                />
-              </div>
-            </div>
+        <form v-if="activeTab === 'login'" class="space-y-4" @submit.prevent="handleLogin">
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-2">Username</label>
+            <input
+              type="text"
+              v-model="loginForm.username"
+              placeholder="Enter your username"
+              class="w-full px-4 py-2.5 bg-gray-100 rounded border border-transparent focus:border-green-700 focus:bg-white focus:ring-0 outline-none transition text-sm"
+              required
+            />
           </div>
 
-          <!-- 记住密码 & 忘记密码 -->
-          <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <input
-                id="remember-me"
-                type="checkbox"
-                class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                v-model="loginForm.remember"
-              />
-              <label for="remember-me" class="ml-2 block text-sm text-gray-900">记住密码</label>
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <label class="block text-xs font-medium text-gray-600">Password</label>
+              <a href="#" class="text-xs text-green-700 hover:underline">Forgot Password?</a>
             </div>
-            <div class="text-sm">
-              <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">忘记密码？</a>
-            </div>
+            <input
+              type="password"
+              v-model="loginForm.password"
+              placeholder="••••••••"
+              class="w-full px-4 py-2.5 bg-gray-100 rounded border border-transparent focus:border-green-700 focus:bg-white focus:ring-0 outline-none transition text-sm"
+              required
+            />
           </div>
 
-          <!-- 登录按钮（带微交互） -->
+          <div class="flex items-center">
+            <input
+              type="checkbox"
+              v-model="loginForm.remember"
+              class="h-4 w-4 text-green-700 border-gray-300 rounded focus:ring-green-700"
+            />
+            <label class="ml-2 text-xs text-gray-600">Remember me</label>
+          </div>
+
           <button
             type="submit"
-            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+            class="w-full py-2.5 bg-green-700 text-white rounded font-medium hover:bg-green-800 transition-colors shadow-md shadow-green-700/20 text-sm"
           >
-            登录
+            Sign in
           </button>
         </form>
 
         <!-- 注册表单 -->
-        <form v-if="activeTab === 'register'" class="space-y-6" @submit.prevent="handleRegister">
-          <div class="space-y-4">
-            <!-- 用户名输入框 -->
-            <div>
-              <label for="reg-username" class="block text-sm font-medium text-gray-700 mb-1">用户名</label>
-              <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
-                  </svg>
-                </div>
-                <input
-                  id="reg-username"
-                  type="text"
-                  v-model="registerForm.username"
-                  class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white/50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
-                  placeholder="请设置用户名（3-16位）"
-                  required
-                />
-              </div>
-            </div>
-
-            <!-- 邮箱输入框 -->
-            <div>
-              <label for="reg-email" class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
-              <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
-                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
-                  </svg>
-                </div>
-                <input
-                  id="reg-email"
-                  type="email"
-                  v-model="registerForm.email"
-                  class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white/50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
-                  placeholder="请输入邮箱（用于找回密码）"
-                  required
-                />
-              </div>
-            </div>
-
-            <!-- 密码输入框 -->
-            <div>
-              <label for="reg-password" class="block text-sm font-medium text-gray-700 mb-1">密码</label>
-              <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8 0H7v2h6V9z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <input
-                  id="reg-password"
-                  type="password"
-                  v-model="registerForm.password"
-                  class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white/50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
-                  placeholder="请设置密码（6-16位）"
-                  required
-                />
-              </div>
-            </div>
-
-            <!-- 确认密码输入框 -->
-            <div>
-              <label for="reg-confirm-pwd" class="block text-sm font-medium text-gray-700 mb-1">确认密码</label>
-              <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8 0H7v2h6V9z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-                <input
-                  id="reg-confirm-pwd"
-                  type="password"
-                  v-model="registerForm.confirmPwd"
-                  class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white/50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
-                  placeholder="请再次输入密码"
-                  required
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- 同意协议 -->
-          <div class="flex items-center">
+        <form v-else class="space-y-4" @submit.prevent="handleRegister">
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-2">Username</label>
             <input
-              id="agree-protocol"
-              type="checkbox"
-              class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-              v-model="registerForm.agreeProtocol"
+              type="text"
+              v-model="registerForm.username"
+              placeholder="Create your username"
+              class="w-full px-4 py-2.5 bg-gray-100 rounded border border-transparent focus:border-green-700 focus:bg-white focus:ring-0 outline-none transition text-sm"
               required
             />
-            <label for="agree-protocol" class="ml-2 block text-sm text-gray-900">
-              我已阅读并同意<a href="#" class="text-indigo-600 hover:text-indigo-500">《用户协议》</a>和<a href="#" class="text-indigo-600 hover:text-indigo-500">《隐私政策》</a>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-2">Email</label>
+            <input
+              type="email"
+              v-model="registerForm.email"
+              placeholder="Enter your email"
+              class="w-full px-4 py-2.5 bg-gray-100 rounded border border-transparent focus:border-green-700 focus:bg-white focus:ring-0 outline-none transition text-sm"
+              required
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-2">Password</label>
+            <input
+              type="password"
+              v-model="registerForm.password"
+              placeholder="Create password"
+              class="w-full px-4 py-2.5 bg-gray-100 rounded border border-transparent focus:border-green-700 focus:bg-white focus:ring-0 outline-none transition text-sm"
+              required
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-2">Confirm Password</label>
+            <input
+              type="password"
+              v-model="registerForm.confirmPwd"
+              placeholder="Confirm your password"
+              class="w-full px-4 py-2.5 bg-gray-100 rounded border border-transparent focus:border-green-700 focus:bg-white focus:ring-0 outline-none transition text-sm"
+              required
+            />
+          </div>
+
+          <div class="flex items-center">
+            <input
+              type="checkbox"
+              v-model="registerForm.agreeProtocol"
+              class="h-4 w-4 text-green-700 border-gray-300 rounded focus:ring-green-700"
+              required
+            />
+            <label class="ml-2 text-xs text-gray-600">
+              I agree to <a href="#" class="text-green-700">Terms</a> and <a href="#" class="text-green-700">Privacy Policy</a>
             </label>
           </div>
 
-          <!-- 注册按钮（带微交互） -->
           <button
             type="submit"
-            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+            class="w-full py-2.5 bg-green-700 text-white rounded font-medium hover:bg-green-800 transition-colors shadow-md shadow-green-700/20 text-sm"
           >
-            注册
+            Create account
           </button>
         </form>
-      </div>
 
-      <!-- 页脚版权 -->
-      <p class="mt-8 text-center text-sm text-white/80">
-        &copy; 2026 Notailab. All rights reserved.
-      </p>
+        <!-- 底部链接 -->
+        <div class="mt-16 flex justify-center gap-8 text-xs text-gray-400">
+          <a href="#" class="hover:text-gray-600 transition">PRIVACY</a>
+          <a href="#" class="hover:text-gray-600 transition">TERMS</a>
+          <a href="#" class="hover:text-gray-600 transition">CONTACT</a>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { login, register } from '@/api/user.js'
-import { toastSuccess, toastError, toastWarn, toastInfo } from '@/utils/toast'
+<script setup lang="ts">
+import { useLogin } from '@/composables/useLogin'
 
-const particleConfig = {
-    count: 30, // 粒子数量（想要多少改多少）
-    minSize: 2, // 最小尺寸（px）
-    maxSize: 8, // 最大尺寸（px）
-    minOpacity: 0.1, // 最小透明度（0-1）
-    maxOpacity: 0.3 // 最大透明度（0-1）
-}
-
-// 2. 响应式存储粒子数据
-const particles = ref([])
-
-// 3. 生成随机粒子的核心函数
-const generateParticles = () => {
-    const particlesList = []
-    for (let i = 0; i < particleConfig.count; i++) {
-        particlesList.push({
-        id: i + 1, // 唯一key
-        top: Math.random() * 100, // 随机top位置（0-100%）
-        left: Math.random() * 100, // 随机left位置（0-100%）
-        size: Math.random() * (particleConfig.maxSize - particleConfig.minSize) + particleConfig.minSize, // 随机尺寸
-        opacity: Math.random() * (particleConfig.maxOpacity - particleConfig.minOpacity) + particleConfig.minOpacity // 随机透明度
-        })
-    }
-    particles.value = particlesList
-}
-
-// 4. 页面挂载时生成粒子，刷新页面自动重新生成
-onMounted(() => {
-    generateParticles()
-})
-
-// 标签切换：login/register
-const activeTab = ref('login')
-
-// 登录表单数据
-const loginForm = ref({
-  username: '',
-  password: '',
-  remember: false
-})
-
-// 注册表单数据
-const registerForm = ref({
-  username: '',
-  email: '',
-  password: '',
-  confirmPwd: '',
-  agreeProtocol: false
-})
-
-// 获取路由实例（用于跳转页面）
-const router = useRouter()
-
-// 登录逻辑
-const handleLogin = async () => {
-    if (!loginForm.value.username.trim()) {
-        toastInfo('请输入用户名！')
-        return
-    }
-    if (!loginForm.value.password.trim()) {
-        toastInfo('请输入密码！')
-        return
-    }
-
-    const res = await login({
-        username: loginForm.value.username,
-        password: loginForm.value.password
-    })
-
-    if (res.code === 200) {
-        localStorage.setItem('token', res.token)
-        toastSuccess('登录成功')
-        router.push('/home')
-    } else {
-        toastWarn('登录失败')
-    }
-}
-
-// 注册逻辑
-const handleRegister = async () => {
-    if (!registerForm.value.username.trim()) {
-        toastInfo('请输入用户名！')
-        return
-    }
-    if (registerForm.value.username.length < 3 || registerForm.value.username.length > 16) {
-        toastInfo('用户名长度需在3-16位之间！')
-        return
-    }
-    if (!registerForm.value.email.trim()) {
-        toastInfo('请输入邮箱！')
-        return
-    }
-    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(registerForm.value.email)) {
-        toastInfo('请输入有效的邮箱地址！')
-        return
-    }
-    if (!registerForm.value.password.trim()) {
-        toastInfo('请输入密码！')
-        return
-    }
-    if (registerForm.value.password.length < 6 || registerForm.value.password.length > 16) {
-        toastInfo('密码长度需在6-16位之间！')
-        return
-    }
-    if (registerForm.value.password !== registerForm.value.confirmPwd) {
-        toastInfo('两次输入的密码不一致！')
-        return
-    }
-    if (!registerForm.value.agreeProtocol) {
-        toastInfo('请阅读并同意用户协议和隐私政策！')
-        return
-    }
-
-    const res = await register({
-        username: registerForm.value.username,
-        password: registerForm.value.password,
-        email: registerForm.value.email
-    })
-
-    if (res.code === 200) {
-        toastSuccess('注册成功！请登录')
-        registerForm.value = {
-            username: '',
-            email: '',
-            password: '',
-            confirmPwd: '',
-            agreeProtocol: false
-        }
-        activeTab.value = 'login'
-    } else if (res.code === 1001) {
-        toastWarn('注册失败，用户名已经被使用')
-    } else if (res.code === 1002) {
-        toastWarn('注册失败，邮箱已经被使用')
-    }
-}
+const { activeTab, loginForm, registerForm, handleLogin, handleRegister } = useLogin()
 </script>
 
 <style scoped>
-/* 自定义网格背景样式 */
-.bg-grid-white\/\[0\.05\] {
-  background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
 </style>

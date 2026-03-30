@@ -1,6 +1,6 @@
 import axios from 'axios'
 // 如果没用 Element Plus，可替换为你自己的 Toast 提示
-import { toastSuccess, toastError, toastWarn, toastInfo } from '@/utils/toast'
+import { toastWarn, toastInfo } from '@/utils/toast'
 
 // 1. 创建 axios 实例
 const service = axios.create({
