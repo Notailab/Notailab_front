@@ -1,117 +1,122 @@
 <template>
-  <div class="min-h-screen bg-gray-50 flex flex-col">
+    <div class="min-h-screen flex flex-col bg-[#f6f8f5] text-slate-900">
 
-    <!-- 顶部标题栏 -->
-    <header class="bg-white shadow sticky top-0 z-30">
-      <div class="mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-14">
-          <div class="flex items-center">
-            <svg class="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-            </svg>
-            <span class="ml-2 text-xl font-semibold text-gray-800">Notailab</span>
-          </div>
+        <SiteHeader
+            active-tab="dashboard"
+            :tabs="headerTabs"
+            @logo-click="router.push('/home')"
+            @tab-click="handleHeaderTabClick"
+        >
+            <template #right>
+                <button class="rounded-full p-2 text-slate-500 transition hover:bg-slate-100" type="button">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                </button>
+                <button class="rounded-full p-2 text-slate-500 transition hover:bg-slate-100" type="button">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </button>
+                <button class="h-9 w-9 overflow-hidden rounded-full bg-slate-200" type="button">
+                    <img
+                        v-if="userInfo.avatar"
+                        :src="userInfo.avatar"
+                        alt="用户头像"
+                        class="h-full w-full object-cover"
+                    />
+                    <div v-else class="flex h-full w-full items-center justify-center text-sm font-semibold text-slate-600">
+                        {{ userInfo.username?.charAt(0)?.toUpperCase() || 'U' }}
+                    </div>
+                </button>
+            </template>
+        </SiteHeader>
 
-          <!-- 右侧导航 -->
-          <div class="flex items-center space-x-4">
-            <div class="flex items-center">
-                <img 
-                    v-if="userInfo.avatar" 
-                    :src="userInfo.avatar" 
-                    alt="用户头像"
-                    class="avatar w-8 h-8"
-                />
-              <span class="ml-2 text-sm font-medium text-gray-700">{{ userInfo.username }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <main class="max-w-5xl mx-auto px-4 py-8 w-full">
-        <div class="mb-6">
-        <h1 class="text-xl font-semibold text-gray-900 mb-1">创建新项目</h1>
-        <p class="text-sm text-gray-600">
-            项目用于存放你的笔记和学习资料。已有内容？
-            <a href="#" class="text-indigo-600 hover:underline">导入内容</a>。
-        </p>
-        <p class="text-xs text-gray-500 mt-1">带星号（*）的字段为必填项。</p>
-        </div>
+        <main class="mx-auto w-full max-w-[1600px] flex-1 px-6 py-6 lg:px-8">
+            <div class="mx-auto max-w-5xl">
+                <div class="mb-6">
+                <h1 class="text-3xl font-semibold tracking-tight text-slate-900 mb-2">创建新项目</h1>
+                <p class="text-sm text-slate-500">
+                        项目用于存放你的笔记和学习资料。已有内容？
+                        <a href="#" class="text-emerald-700 hover:underline">导入内容</a>。
+                </p>
+                <p class="text-xs text-slate-400 mt-1">带星号（*）的字段为必填项。</p>
+                </div>
 
         <form @submit.prevent="handleSubmit" class="space-y-6">
         <!-- 1. 基本信息 -->
-        <div class="border border-gray-200 rounded-md p-5 relative bg-white hover:shadow-md duration-300">
-            <div class="absolute -top-3 left-4 bg-white px-2 text-sm font-medium text-gray-600">1 基本信息</div>
+        <div class="border border-slate-200 rounded-3xl p-5 relative bg-white shadow-sm hover:shadow-md duration-300">
+            <div class="absolute -top-3 left-4 bg-white px-2 text-sm font-medium text-slate-500">1 基本信息</div>
 
             <div class="grid grid-cols-[auto_1fr] gap-x-2 gap-y-4 mb-4">
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">所有者 *</label>
-                <div class="flex items-center border border-gray-200 rounded-md px-2 py-1.5 bg-gray-50">
+                <label class="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">所有者 *</label>
+                <div class="flex items-center rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2.5">
                 <img 
                     v-if="userInfo.avatar" 
                     :src="userInfo.avatar" 
                     alt="用户头像"
                     class="avatar w-5 h-5 mr-2"
                 />
-                <span class="text-sm font-medium">{{ userInfo.username }}</span>
-                <svg class="w-4 h-4 text-gray-500 ml-1" fill="currentColor" viewBox="0 0 16 16">
+                <span class="text-sm font-medium text-slate-700">{{ userInfo.username }}</span>
+                <svg class="ml-1 h-4 w-4 text-slate-400" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
                 </svg>
                 </div>
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">项目名称 *</label>
+                <label class="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">项目名称 *</label>
                 <input
                 v-model="projectName"
                 type="text"
-                class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:bg-white"
                 />
-                <p class="text-xs text-gray-500 mt-1">
+                <p class="mt-2 text-xs text-slate-400">
                 好的项目名称简短好记，不如试试
-                <span class="text-green-600 font-medium">学习笔记-2026</span>？
+                <span class="font-medium text-emerald-700">学习笔记-2026</span>？
                 </p>
             </div>
             </div>
 
             <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">项目描述</label>
+            <label class="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">项目描述</label>
             <textarea
                 v-model="projectDesc"
-                rows="1"
-                class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-none"
+                rows="2"
+                class="w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:bg-white"
             ></textarea>
-            <p class="text-xs text-gray-500 mt-1">0 / 350 字符</p>
+            <p class="mt-2 text-xs text-slate-400">0 / 350 字符</p>
             </div>
         </div>
 
         <!-- 2. 项目设置（修改后） -->
-        <div class="border border-gray-200 rounded-md p-5 relative bg-white hover:shadow-md duration-300">
-            <div class="absolute -top-3 left-4 bg-white px-2 text-sm font-medium text-gray-600">2 项目设置</div>
+        <div class="border border-slate-200 rounded-3xl p-5 relative bg-white shadow-sm hover:shadow-md duration-300">
+            <div class="absolute -top-3 left-4 bg-white px-2 text-sm font-medium text-slate-500">2 项目设置</div>
 
             <!-- 初始化模板（可编辑） -->
             <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-1">初始化模板</label>
+            <label class="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">初始化模板</label>
             <textarea
                 v-model="templateContent"
                 rows="12"
-                class="w-full border border-gray-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono resize-y"
+                class="w-full resize-y rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-mono outline-none transition focus:border-emerald-500 focus:bg-white"
             ></textarea>
-            <p class="text-xs text-gray-500 mt-1">
+            <p class="mt-2 text-xs text-slate-400">
                 模板将作为项目的初始内容，可用于快速开始你的笔记。
             </p>
             </div>
 
             <!-- 添加分类标签 -->
-            <div class="flex items-center justify-between py-3 border-t">
+            <div class="flex items-center justify-between border-t border-slate-200 py-3">
             <div>
-                <p class="text-sm font-medium text-gray-700">添加分类标签</p>
-                <p class="text-xs text-gray-500">
+                <p class="text-sm font-medium text-slate-700">添加分类标签</p>
+                <p class="text-xs text-slate-400">
                 标签有助于你后续整理和查找项目。
                 </p>
             </div>
-            <div class="flex items-center border border-gray-200 rounded-md px-2 py-1 bg-gray-50">
-                <span class="text-sm text-gray-700">选择标签</span>
-                <svg class="w-4 h-4 text-gray-500 ml-1" fill="currentColor" viewBox="0 0 16 16">
+            <div class="flex items-center rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">
+                <span class="text-sm text-slate-700">选择标签</span>
+                <svg class="ml-1 h-4 w-4 text-slate-400" fill="currentColor" viewBox="0 0 16 16">
                 <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
                 </svg>
             </div>
@@ -119,30 +124,30 @@
         </div>
 
         <!-- 3. 时间设置（新增） -->
-        <div class="border border-gray-200 rounded-md p-5 relative bg-white hover:shadow-md duration-300">
-            <div class="absolute -top-3 left-4 bg-white px-2 text-sm font-medium text-gray-600">3 时间设置</div>
+        <div class="border border-slate-200 rounded-3xl p-5 relative bg-white shadow-sm hover:shadow-md duration-300">
+            <div class="absolute -top-3 left-4 bg-white px-2 text-sm font-medium text-slate-500">3 时间设置</div>
 
             <div class="grid grid-cols-2 gap-4">
             <!-- 项目开始时间 -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">项目开始时间 *</label>
+                <label class="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">项目开始时间 *</label>
                 <input
                 v-model="startDate"
                 type="date"
-                class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:bg-white"
                 />
-                <p class="text-xs text-gray-500 mt-1">设置项目的开始日期</p>
+                <p class="mt-2 text-xs text-slate-400">设置项目的开始日期</p>
             </div>
 
             <!-- 项目结束时间 -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">项目结束时间</label>
+                <label class="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">项目结束时间</label>
                 <input
                 v-model="endDate"
                 type="date"
-                class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:bg-white"
                 />
-                <p class="text-xs text-gray-500 mt-1">设置项目的预计结束日期（可选）</p>
+                <p class="mt-2 text-xs text-slate-400">设置项目的预计结束日期（可选）</p>
             </div>
             </div>
         </div>
@@ -151,12 +156,13 @@
         <div class="flex justify-end">
             <button
             type="submit"
-            class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-md transition-colors hover:scale-[1.01] active:scale-[0.99] duration-200"
+                        class="px-5 py-3 bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-medium rounded-2xl shadow-sm transition-colors hover:scale-[1.01] active:scale-[0.99] duration-200"
             >
             创建项目
             </button>
         </div>
         </form>
+            </div>
     </main>
   </div>
 </template>
@@ -164,9 +170,11 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { toastSuccess, toastWarn, toastError } from '@/utils/toast.js'
-import { getUserInfo } from '@/api/user.js'
-import { createProject } from '@/api/project.js'
+import { toastSuccess, toastWarn, toastError } from '@/utils/toast'
+import { getUserInfo } from '@/api/user'
+import { createProject } from '@/api/project'
+import { headerTabs, createHeaderTabClickHandler } from '@/composables/useHeaderNavigation'
+import SiteHeader from '@/components/SiteHeader.vue'
 
 const router = useRouter()
 
@@ -174,6 +182,8 @@ const userInfo = ref({
     username: 'xxx',
     avatar: '',
 })
+
+const templateContent = ref('# 新项目\n\n## 目标\n- 记录知识点\n- 整理学习过程\n- 生成复盘总结\n')
 
 const fetchUserInfo = async () => {
     try {
@@ -194,6 +204,8 @@ const fetchUserInfo = async () => {
 onMounted(() => {
     fetchUserInfo()
 })
+
+const handleHeaderTabClick = createHeaderTabClickHandler(router)
 
 // 表单状态
 const projectName = ref('')
@@ -225,7 +237,7 @@ const handleSubmit = async () => {
 
     if (res.code === 200) {
         toastSuccess(`项目 "${projectName.value}" 创建成功!`)
-        router.push('/project')
+        router.push('/home')
     } else if (res.code === 1001) {
         toastWarn('项目名已存在')
     }

@@ -1,6 +1,6 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { login, register } from '@/api/user.js'
+import { login, register } from '@/api/user'
 import { toastSuccess, toastError, toastWarn, toastInfo } from '@/utils/toast'
 
 interface Particle {

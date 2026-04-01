@@ -26,3 +26,19 @@ export function getUserInfo() {
         method: 'post',
     })
 }
+// 获取用户设置（GET 请求）
+export function getUserSettings() {
+    return request({
+        url: '/user/settings',
+        method: 'get'
+    })
+}
+
+// 更新用户设置（PUT 请求）
+export function updateUserSettings(data) {
+    return request({
+        url: '/user/settings',
+        method: 'put',
+        data
+    })
+}

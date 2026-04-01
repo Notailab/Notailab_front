@@ -1,69 +1,57 @@
 <template>
-  <div class="min-h-screen bg-gray-50 flex flex-col relative">
-    <!-- 顶部导航栏（不变） -->
-    <header class="bg-white border-b border-gray-100">
-      <div class="flex items-center justify-between px-6 py-3">
-        <div class="flex items-center gap-6">
-          <div class="flex items-center gap-2">
-            <div class="w-6 h-6 bg-emerald-700 rounded flex items-center justify-center">
-              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <span class="font-semibold text-gray-900 text-sm">Notailab</span>
-          </div>
-          <div class="flex items-center gap-4">
-            <button class="text-emerald-700 text-sm font-medium border-b-2 border-emerald-700 pb-1">Dashboard</button>
-            <button class="text-gray-500 text-sm hover:text-gray-700">Stats</button>
-            <button class="text-gray-500 text-sm hover:text-gray-700">Settings</button>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-2 text-xs text-gray-500">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <div class="min-h-screen flex flex-col bg-[#f6f8f5] text-slate-900 relative">
+    <SiteHeader
+      active-tab="dashboard"
+      :tabs="headerTabs"
+      @logo-click="router.push('/home')"
+      @tab-click="handleHeaderTabClick"
+    >
+      <template #center>
+        <div class="flex min-w-0 items-center gap-2 text-xs text-slate-500">
+          <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
           </svg>
-          <span>{{ projectTitle }}</span>
+          <span class="truncate">{{ projectTitle }}</span>
           <span>/</span>
-          <span class="text-gray-900 font-medium">{{ currentFile.name || 'Untitled' }}</span>
+          <span class="font-medium text-slate-900">{{ currentFile.name || 'Untitled' }}</span>
         </div>
+      </template>
 
-        <div class="flex items-center gap-4">
-          <div class="relative">
-            <input
-              type="text"
-              placeholder="Search documentation..."
-              class="pl-10 pr-4 py-2 bg-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 w-64"
-            />
-            <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-          <button class="p-2 text-gray-500 hover:bg-gray-100 rounded-lg">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-          </button>
-          <button class="p-2 text-gray-500 hover:bg-gray-100 rounded-lg">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </button>
-          <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-200">
-            <img v-if="userInfo.avatar" :src="userInfo.avatar" class="w-full h-full object-cover">
-            <div v-else class="w-full h-full flex items-center justify-center text-gray-600 text-sm">
-              {{ userInfo.username?.charAt(0) || 'U' }}
-            </div>
-          </div>
+      <template #right>
+        <div class="relative hidden md:block">
+          <input
+            type="text"
+            placeholder="Search documentation..."
+            class="w-64 rounded-lg bg-slate-100 py-2 pl-10 pr-4 text-sm outline-none transition focus:bg-white focus:ring-2 focus:ring-emerald-500"
+          />
+          <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
         </div>
-      </div>
-    </header>
+        <button class="rounded-full p-2 text-slate-500 transition hover:bg-slate-100" type="button">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+        </button>
+        <button class="rounded-full p-2 text-slate-500 transition hover:bg-slate-100" type="button">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </button>
+        <button class="h-8 w-8 overflow-hidden rounded-full bg-slate-200" type="button">
+          <img v-if="userInfo.avatar" :src="userInfo.avatar" class="h-full w-full object-cover">
+          <div v-else class="flex h-full w-full items-center justify-center text-sm font-semibold text-slate-600">
+            {{ userInfo.username?.charAt(0)?.toUpperCase() || 'U' }}
+          </div>
+        </button>
+      </template>
+    </SiteHeader>
 
     <div class="flex flex-1 overflow-hidden">
       <!-- 左侧边栏（不变） -->
-      <aside class="w-56 bg-white border-r border-gray-100 flex flex-col">
+      <aside class="flex w-56 flex-col overflow-hidden border border-slate-200 bg-white shadow-sm">
         <div class="p-4">
-          <button class="w-full flex items-center justify-center gap-2 bg-emerald-700 text-white py-2 rounded hover:bg-emerald-800 transition text-sm"
+          <button class="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 py-2.5 text-sm text-white shadow-sm transition hover:bg-emerald-800"
             @click="handleNewFile"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,64 +60,64 @@
             New File
           </button>
         </div>
-        <nav class="flex-1 p-4 border-t border-gray-100 overflow-y-auto">
+        <nav class="flex-1 overflow-y-auto border-t border-slate-200 p-4">
           <button
             v-for="file in fileList"
             :key="file.file_id"
             @click="handleOpenFile(file)"
-            class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm"
-            :class="currentFile.file_id === file.file_id ? 'font-medium bg-gray-50' : 'text-gray-600 hover:bg-gray-50'"
+            class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition"
+            :class="currentFile.file_id === file.file_id ? 'bg-slate-50 font-medium text-slate-900' : 'text-slate-600 hover:bg-slate-50'"
           >
-            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             <span class="truncate">{{ file.name }}</span>
           </button>
-          <div v-if="fileList.length === 0" class="text-xs text-gray-400 text-center py-4">No files yet</div>
+          <div v-if="fileList.length === 0" class="py-4 text-center text-xs text-slate-400">No files yet</div>
         </nav>
-        <div class="p-4 border-t border-gray-100 space-y-3">
-          <button class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 text-sm">Help Center</button>
-          <button class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 text-sm">Logout</button>
+        <div class="space-y-3 border-t border-slate-200 p-4">
+          <button class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 transition hover:bg-slate-50">Help Center</button>
+          <button class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 transition hover:bg-slate-50">Logout</button>
         </div>
       </aside>
 
       <!-- 右侧主区域 -->
       <div class="flex-1 flex flex-col overflow-hidden">
         <!-- 工具栏 -->
-        <div class="bg-white border-b border-gray-100 px-6 py-2 flex items-center justify-between">
-          <div class="flex items-center gap-4">
+        <div class="mb-3 flex items-center justify-between border bg-white px-4 py-2 shadow-sm lg:px-5">
+          <div class="flex items-center">
             <button
               v-if="currentFile?.file_id"
               @click="handleDeleteFile"
-              class="px-3 py-1 bg-gray-100 text-gray-600 rounded text-sm flex items-center justify-center hover:text-red-500 transition"
+              class="flex items-center justify-center rounded-xl bg-slate-100 px-3 py-2 text-sm text-slate-600 transition hover:text-red-500 hover:bg-slate-200"
               title="删除当前文件"
             >
               <span v-html="toolbarIcons.delete"></span>
             </button>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center">
             <div class="flex items-center gap-2">
               <template v-for="(t, idx) in editorToolbars" :key="idx">
                 <button
                   v-if="t !== '-' && t !== '='"
                   @click="handleToolbarClick(t)"
-                  class="px-3 py-1 bg-gray-100 text-gray-600 rounded text-sm flex items-center justify-center"
+                  class="flex items-center justify-center rounded-xl bg-slate-100 px-3 py-2 text-sm text-slate-600 transition hover:bg-slate-200"
                 >
                   <span v-html="toolbarIcons[t] || t"></span>
                 </button>
-                <div v-else-if="t === '-'" class="w-px h-6 bg-gray-200 mx-1"></div>
+                <div v-else-if="t === '-'" class="mx-1 h-6 w-px bg-slate-200"></div>
                 <div v-else-if="t === '='" class="w-4"></div>
               </template>
             </div>
-            <button @click="handleSave" class="px-4 py-1.5 bg-emerald-700 text-white rounded text-sm">Save</button>
+            <button @click="handleSave" class="ml-3 rounded-xl bg-emerald-700 px-4 py-2 text-sm text-white shadow-sm transition hover:bg-emerald-800">Save</button>
           </div>
         </div>
 
         <!-- ====================== 核心布局 ====================== -->
-        <div class="flex-1 p-6 overflow-hidden">
+        <div class="flex-1 overflow-hidden min-h-0">
           <!-- AI 关闭：编辑器居中 -->
-          <div v-if="!showAIChat" class="h-full flex justify-center">
-            <div :class="['w-full', centerEditorMaxClass, 'bg-white', 'rounded-lg', 'h-full']">
+          <div v-if="!showAIChat" class="flex h-full min-h-0 justify-center overflow-hidden">
+            <div :class="['project-md-editor', 'h-full', 'min-h-0', 'w-full', centerEditorMaxClass, 'border', 'border-slate-200', 'bg-white', 'shadow-sm']">
               <MdEditor
                 ref="mdEditorRef"
                 v-model="editorContent"
@@ -140,8 +128,8 @@
           </div>
 
           <!-- AI 打开：编辑器 + AI 左右并排 -->
-          <div v-else class="h-full flex items-stretch gap-3" id="drag-container">
-            <div class="bg-white rounded-lg h-full" :style="{ width: `${editorWidth}%`, flexShrink: 0 }">
+          <div v-else class="h-full min-h-0 flex items-stretch gap-0 overflow-hidden" id="drag-container">
+            <div class="project-md-editor h-full min-h-0 border-slate-200 bg-white shadow-sm" :style="{ width: `${editorWidth}%`, flexShrink: 0 }">
               <MdEditor
                 ref="mdEditorRef"
                 v-model="editorContent"
@@ -150,26 +138,27 @@
               />
             </div>
 
-            <div class="w-1 bg-gray-200 hover:bg-emerald-500 cursor-col-resize" @mousedown="startDrag"></div>
+            <div class="w-1 cursor-col-resize bg-slate-200 hover:bg-emerald-500" @mousedown="startDrag"></div>
 
-            <div class="flex-1 bg-white rounded-lg h-full flex flex-col overflow-hidden">
-              <div class="px-4 py-3 border-b border-gray-100 bg-emerald-50 flex justify-between items-center">
+            <div class="flex h-full min-h-0 flex-1 flex-col overflow-hidden border bg-white shadow-sm">
+              <div class="flex items-center justify-between border-b bg-emerald-50 px-4 py-3">
                 <h3 class="text-sm font-semibold text-emerald-800">AI Assistant</h3>
-                <button @click="showAIChat = false" class="text-gray-500">✕</button>
+                <button @click="showAIChat = false" class="text-slate-500">✕</button>
               </div>
-              <div class="flex-1 p-4 overflow-y-auto space-y-4">
+              <div class="flex-1 space-y-4 overflow-y-auto p-4">
                 <div v-for="(msg, idx) in messages" :key="idx" class="flex flex-col" :class="msg.role === 'user' ? 'items-end' : 'items-start'">
-                  <div class="max-w-[85%] px-3 py-2 rounded-lg text-sm"
-                    :class="msg.role === 'user' ? 'bg-emerald-600 text-white rounded-br-none' : 'bg-gray-100 text-gray-800 rounded-bl-none'">
-                    {{ msg.content }}
+                  <div class="max-w-[85%] px-3 py-2 rounded-md text-sm"
+                    :class="msg.role === 'user' ? 'bg-emerald-600 text-white rounded-br-none' : 'bg-slate-100 text-slate-800 rounded-bl-none'">
+                    <span v-if="msg.role === 'user'">{{ msg.content }}</span>
+                    <span v-else v-html="formatAssistantMessage(msg.content)"></span>
                   </div>
                 </div>
-                <div v-if="loading" class="text-sm text-gray-500">Thinking...</div>
+                <div v-if="loading" class="text-sm text-slate-500">Thinking...</div>
               </div>
-              <div class="p-3 border-t border-gray-100">
+              <div class="border-t border-slate-200 p-3">
                 <div class="flex gap-2">
-                  <input v-model="inputMsg" @keyup.enter="sendMessage" placeholder="Enter question..." class="flex-1 px-3 py-2 bg-gray-100 rounded-lg text-sm outline-none">
-                  <button @click="sendMessage" :disabled="!inputMsg.trim()" class="px-3 py-2 bg-emerald-600 text-white rounded-lg text-sm">Send</button>
+                  <input v-model="inputMsg" @keyup.enter="sendMessage" placeholder="Enter question..." class="flex-1 rounded-xl bg-slate-100 px-3 py-2 text-sm outline-none">
+                  <button @click="sendMessage" :disabled="!inputMsg.trim()" class="rounded-xl bg-emerald-600 px-3 py-2 text-sm text-white transition hover:bg-emerald-700">Send</button>
                 </div>
               </div>
             </div>
@@ -177,10 +166,16 @@
         </div>
 
         <!-- 底部状态栏 -->
-        <div class="bg-gray-50 border-t border-gray-100 px-6 py-2 text-xs text-gray-500">
+        <div class="mt-3 border bg-white px-4 py-3 text-xs text-slate-500 shadow-sm lg:px-5">
           <div class="flex justify-between">
-            <div>Saved to Cloud</div>
-            <div>1,248 Words</div>
+            <div class="flex items-center gap-2">
+              <span
+                class="inline-block h-2.5 w-2.5 rounded-full"
+                :class="hasUnsavedChanges ? 'bg-red-500' : 'bg-emerald-500'"
+              ></span>
+              <span>{{ hasUnsavedChanges ? 'Need to Save' : 'Saved to Cloud' }}</span>
+            </div>
+            <div>{{ displayWordCount }} Words</div>
           </div>
         </div>
       </div>
@@ -190,7 +185,7 @@
     <button
       v-if="!showAIChat"
       @click="showAIChat = true"
-      class="fixed right-6 bottom-6 w-14 h-14 bg-emerald-600 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-emerald-700 z-50"
+      class="fixed right-6 bottom-16 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg hover:bg-emerald-700"
     >
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v9a2 2 0 01-2 2h-4l-4 4z" />
@@ -200,16 +195,20 @@
 </template>
 
 <script setup>
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { MdEditor } from 'md-editor-v3'
 import 'md-editor-v3/lib/style.css'
 import { useNoteEditor } from '@/composables/useNoteEditor'
 import { useUserInfo } from '@/composables/useUserInfo'
 import { createFile } from '@/api/file'
+import { chatWithAgent } from '@/api/agent'
 import { ref, onMounted, onUnmounted, nextTick, computed } from 'vue'
 import { toastSuccess, toastError } from '@/utils/toast'
+import { headerTabs, createHeaderTabClickHandler } from '@/composables/useHeaderNavigation'
+import SiteHeader from '@/components/SiteHeader.vue'
 
 const route = useRoute()
+const router = useRouter()
 const projectTitle = route.params.projecttitle
 const projectId = route.params.projectid
 
@@ -217,11 +216,14 @@ const { fileList, currentFile, openFile, saveFile, fetchFiles, removeFile } = us
 const { userInfo, fetchUserInfo } = useUserInfo()
 fetchUserInfo()
 
+const handleHeaderTabClick = createHeaderTabClickHandler(router)
+
 const editorContent = ref('')
 const showAIChat = ref(false)
 const editorWidth = ref(65)
 const isPreview = ref(false)
 const mdEditorRef = ref(null)
+const lastSavedContent = ref('')
 const editorToolbars = [
   'bold', 'italic', 'underline', '-',
   'unorderedList', 'orderedList', '-',
@@ -294,20 +296,30 @@ const togglePreview = async () => {
 
 const handleNewFile = () => {
   editorContent.value = ''
-  currentFile.value = {}
+  currentFile.value = {
+    file_id: null,
+    name: '',
+    content: ''
+  }
+  lastSavedContent.value = ''
 }
 
 // 切换文件
 const handleOpenFile = (file) => {
   openFile(file)
   editorContent.value = file.content || ''
+  lastSavedContent.value = file.content || ''
 }
 
 // 发布
 const handleSave = async () => {
   if (currentFile.value?.file_id) {
-    await saveFile(editorContent.value || '')
-    toastSuccess('Saved')
+    const saved = await saveFile(editorContent.value || '')
+    if (saved) {
+      lastSavedContent.value = editorContent.value || ''
+      currentFile.value.content = editorContent.value || ''
+      toastSuccess('Saved')
+    }
     return
   }
   const fullName = prompt('Enter file name (e.g. note.md)')
@@ -319,6 +331,14 @@ const handleSave = async () => {
     if (res.code === 200) {
       toastSuccess('Created')
       await fetchFiles()
+      const createdFile = fileList.value.find((file) => file.name === fullName)
+      if (createdFile) {
+        openFile(createdFile)
+        editorContent.value = createdFile.content || editorContent.value || ''
+        lastSavedContent.value = createdFile.content || editorContent.value || ''
+      } else {
+        lastSavedContent.value = editorContent.value || ''
+      }
     }
   } catch (e) {
     toastError('Failed' + e)
@@ -339,6 +359,7 @@ const handleDeleteFile = async () => {
     if (res) {
       editorContent.value = ''
       currentFile.value = {}
+      lastSavedContent.value = ''
     } 
   } catch (err) {
     toastError('删除失败，请重试')
@@ -360,16 +381,62 @@ const onDrag = (e) => {
 onMounted(() => {
   window.addEventListener('mousemove', onDrag)
   window.addEventListener('mouseup', stopDrag)
+  window.addEventListener('keydown', handleGlobalShortcut)
 })
 onUnmounted(() => {
   window.removeEventListener('mousemove', onDrag)
   window.removeEventListener('mouseup', stopDrag)
+  window.removeEventListener('keydown', handleGlobalShortcut)
 })
+
+const handleGlobalShortcut = (event) => {
+  const isSaveShortcut = (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's'
+  if (!isSaveShortcut) return
+
+  event.preventDefault()
+  if (!hasUnsavedChanges.value) return
+  handleSave()
+}
 
 // AI 聊天
 const inputMsg = ref('')
-const messages = ref([{ role: 'ai', content: '你好！我是 AI 助手～' }])
+const messages = ref([{ role: 'assistant', content: '你好！我是 AI 助手～' }])
 const loading = ref(false)
+
+const strippedText = computed(() => {
+  return String(editorContent.value || '')
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/`[^`]*`/g, ' ')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/^\s{0,3}#{1,6}\s+/gm, '')
+    .replace(/^\s{0,3}[-*+]\s+/gm, '')
+    .replace(/^\s{0,3}>\s?/gm, '')
+    .replace(/\|/g, ' ')
+    .replace(/[\*_~>{}\[\]()#+\-=!]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+})
+
+const displayWordCount = computed(() => {
+  const text = strippedText.value
+  if (!text) return 0
+
+  const latinWords = (text.match(/[A-Za-z0-9]+(?:'[A-Za-z0-9]+)?/g) || []).length
+  const cjkChars = (text.match(/[\u4e00-\u9fff]/g) || []).length
+  return latinWords + cjkChars
+})
+
+const hasUnsavedChanges = computed(() => {
+  const currentContent = editorContent.value || ''
+  const savedContent = lastSavedContent.value || ''
+
+  if (!currentFile.value?.file_id) {
+    return currentContent.trim().length > 0
+  }
+
+  return currentContent !== savedContent
+})
 
 const sendMessage = async () => {
   const msg = inputMsg.value.trim()
@@ -377,14 +444,81 @@ const sendMessage = async () => {
   messages.value.push({ role: 'user', content: msg })
   inputMsg.value = ''
   loading.value = true
-  setTimeout(() => {
-    messages.value.push({ role: 'ai', content: `我收到了：${msg}` })
+
+  try {
+    const res = await chatWithAgent({
+      project_id: Number(projectId),
+      file_id: currentFile.value?.file_id || null,
+      message: msg,
+      editor_content: editorContent.value || currentFile.value?.content || '',
+      selected_text: ''
+    })
+
+    const reply = res?.data?.reply || '暂时没有返回内容'
+    messages.value.push({ role: 'assistant', content: reply })
+  } catch (err) {
+    messages.value.push({ role: 'assistant', content: '抱歉，当前无法连接到 AI 服务，请稍后重试。' })
+    toastError('AI 请求失败')
+  } finally {
     loading.value = false
-  }, 700)
+  }
+}
+
+const escapeHtml = (value = '') => {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+const formatAssistantMessage = (content = '') => {
+  const normalized = String(content)
+
+  return escapeHtml(normalized)
+    .replace(/```([\s\S]*?)```/g, (_, code) => {
+      return `<pre class="my-2 overflow-x-auto rounded-lg bg-gray-900 px-3 py-2 text-xs leading-5 text-gray-100"><code>${escapeHtml(code.trim())}</code></pre>`
+    })
+    .replace(/`([^`]+)`/g, '<code class="rounded bg-gray-200 px-1 py-0.5 text-[0.85em] text-gray-800">$1</code>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^\s*[-*]\s+/gm, '• ')
+    .replace(/^\s*(\d+)\.\s+/gm, '$1. ')
+    .replace(/\n/g, '<br>')
 }
 </script>
 
 <style>
 .md-editor { border: none !important; }
 .md-editor-wrapper { border: none !important; }
+
+.project-md-editor {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.project-md-editor .md-editor-content,
+.project-md-editor .md-editor-input-wrapper,
+.project-md-editor .md-editor-preview-wrapper {
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+.project-md-editor .md-editor-content,
+.project-md-editor .md-editor-input-wrapper,
+.project-md-editor .md-editor-preview-wrapper,
+.project-md-editor .md-editor-content::-webkit-scrollbar,
+.project-md-editor .md-editor-input-wrapper::-webkit-scrollbar,
+.project-md-editor .md-editor-preview-wrapper::-webkit-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.project-md-editor .md-editor-content::-webkit-scrollbar,
+.project-md-editor .md-editor-input-wrapper::-webkit-scrollbar,
+.project-md-editor .md-editor-preview-wrapper::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
 </style>
