@@ -324,14 +324,27 @@ const handleSave = async () => {
   }
   const fullName = prompt('Enter file name (e.g. note.md)')
   if (!fullName) return
+
+  const normalizedName = fullName.trim()
+  if (!normalizedName) {
+    toastError('文件名不能为空')
+    return
+  }
+  if (normalizedName.startsWith('.')) {
+    toastError('不允许创建以 . 开头的文件')
+    return
+  }
+
   try {
     const res = await createFile({
-      project_id: +projectId, name: fullName, content: editorContent.value
+      project_id: +projectId,
+      name: normalizedName,
+      content: editorContent.value,
     })
     if (res.code === 200) {
       toastSuccess('Created')
       await fetchFiles()
-      const createdFile = fileList.value.find((file) => file.name === fullName)
+      const createdFile = fileList.value.find((file) => file.name === normalizedName)
       if (createdFile) {
         openFile(createdFile)
         editorContent.value = createdFile.content || editorContent.value || ''
@@ -448,10 +461,7 @@ const sendMessage = async () => {
   try {
     const res = await chatWithAgent({
       project_id: Number(projectId),
-      file_id: currentFile.value?.file_id || null,
-      message: msg,
-      editor_content: editorContent.value || currentFile.value?.content || '',
-      selected_text: ''
+      content: msg,
     })
 
     const reply = res?.data?.reply || '暂时没有返回内容'

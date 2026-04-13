@@ -8,6 +8,10 @@ import {
 } from '@/api/file'
 import { toastSuccess, toastError } from '@/utils/toast'
 
+const isHiddenFileName = (fileName: string) => {
+    return String(fileName || '').trim().startsWith('.')
+}
+
 export function useNoteEditor() {
     const route = useRoute()
     const projectId = route.params.projectid
@@ -82,10 +86,22 @@ export function useNoteEditor() {
     // 4. 新建文件
     // ======================================
     const createNewFile = async (fileName: string) => {
+        const normalizedName = String(fileName || '').trim()
+        if (!normalizedName) {
+            toastError('文件名不能为空')
+            return null
+        }
+
+        if (isHiddenFileName(normalizedName)) {
+            toastError('不允许创建以 . 开头的文件')
+            return null
+        }
+
         try {
             const res = await createFile({
                 project_id: projectId,
-                title: fileName
+                name: normalizedName,
+                content: ''
             })
             if (res.code === 200) {
                 toastSuccess('新建成功')
