@@ -28,20 +28,24 @@ export function useNoteEditor() {
     // ======================================
     // 1. 获取当前项目下所有文件
     // ======================================
-    const fetchFiles = async () => {
+    const fetchFiles = async (options = {}) => {
+        const silent = !!options.silent
         try {
             const res = await getFilesByProjectID({
                 project_id: Number(projectId)
             })
-            console.log('获取文件列表响应：', res)
             if (res.code === 200) {
                 fileList.value = res.data || []
             } else {
-                toastError(res.message || '获取文件列表失败')
+                if (!silent) {
+                    toastError(res.message || '获取文件列表失败')
+                }
             }
         } catch (err) {
-            console.error('获取文件异常：', err)
-            toastError('网络异常，获取文件失败')
+            if (!silent) {
+                console.error('获取文件异常：', err)
+                toastError('网络异常，获取文件失败')
+            }
         }
     }
 

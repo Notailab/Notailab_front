@@ -230,6 +230,7 @@ const editorToolbars = [
   'code', 'codeRow', 'link', 'image', 'table', '-',
   'preview'
 ]
+let refreshTimer = null
 
 const handleToolbarClick = async (key) => {
   try {
@@ -316,6 +317,7 @@ const handleSave = async () => {
   if (currentFile.value?.file_id) {
     const saved = await saveFile(editorContent.value || '')
     if (saved) {
+      await refreshFilesSilently()
       lastSavedContent.value = editorContent.value || ''
       currentFile.value.content = editorContent.value || ''
       toastSuccess('Saved')
@@ -343,7 +345,7 @@ const handleSave = async () => {
     })
     if (res.code === 200) {
       toastSuccess('Created')
-      await fetchFiles()
+      await refreshFilesSilently()
       const createdFile = fileList.value.find((file) => file.name === normalizedName)
       if (createdFile) {
         openFile(createdFile)
@@ -395,11 +397,21 @@ onMounted(() => {
   window.addEventListener('mousemove', onDrag)
   window.addEventListener('mouseup', stopDrag)
   window.addEventListener('keydown', handleGlobalShortcut)
+
+  refreshTimer = window.setInterval(() => {
+    if (document.hidden) return
+    void refreshFilesSilently()
+  }, 5000)
 })
 onUnmounted(() => {
   window.removeEventListener('mousemove', onDrag)
   window.removeEventListener('mouseup', stopDrag)
   window.removeEventListener('keydown', handleGlobalShortcut)
+
+  if (refreshTimer) {
+    window.clearInterval(refreshTimer)
+    refreshTimer = null
+  }
 })
 
 const handleGlobalShortcut = (event) => {
@@ -450,6 +462,35 @@ const hasUnsavedChanges = computed(() => {
 
   return currentContent !== savedContent
 })
+
+const syncOpenFileFromLatestList = () => {
+  if (!currentFile.value?.file_id) return
+
+  const latestFile = fileList.value.find((file) => file.file_id === currentFile.value.file_id)
+  if (!latestFile) return
+
+  currentFile.value = {
+    ...currentFile.value,
+    ...latestFile,
+  }
+
+  if (hasUnsavedChanges.value) {
+    return
+  }
+
+  const latestContent = latestFile.content || ''
+  if (editorContent.value !== latestContent) {
+    editorContent.value = latestContent
+  }
+  if (lastSavedContent.value !== latestContent) {
+    lastSavedContent.value = latestContent
+  }
+}
+
+const refreshFilesSilently = async () => {
+  await fetchFiles({ silent: true })
+  syncOpenFileFromLatestList()
+}
 
 const sendMessage = async () => {
   const msg = inputMsg.value.trim()
