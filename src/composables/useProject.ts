@@ -16,6 +16,14 @@ export interface Project {
     updated_at: string
 }
 
+const sortProjectsByUpdatedAtDesc = (items: Project[]) => {
+    return [...items].sort((left, right) => {
+        const leftTime = new Date(left.updated_at || 0).getTime()
+        const rightTime = new Date(right.updated_at || 0).getTime()
+        return rightTime - leftTime
+    })
+}
+
 // 业务 Hook：完全独立，不写在 vue 里
 export function useProjects() {
     const projectList = ref<Project[]>([])
@@ -28,7 +36,7 @@ export function useProjects() {
             const res = await projects()
 
             if (res.code === 200) {
-                projectList.value = res.projects
+                projectList.value = sortProjectsByUpdatedAtDesc(Array.isArray(res.projects) ? res.projects : [])
             } else {
                 toastError(res.message || '获取项目失败')
             }
