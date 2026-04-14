@@ -8,6 +8,22 @@ export function createProject(data) {
     })
 }
 
+export function getProject(data) {
+    return request({
+        url: '/project/get',
+        method: 'post',
+        data
+    })
+}
+
+export function updateProject(data) {
+    return request({
+        url: '/project/update',
+        method: 'post',
+        data
+    })
+}
+
 export function projectTitles() {
     return request({
         url: '/project/titles',

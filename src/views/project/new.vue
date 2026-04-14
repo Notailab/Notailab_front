@@ -35,7 +35,7 @@
         <main class="mx-auto w-full max-w-[1600px] flex-1 px-6 py-6 lg:px-8">
             <div class="mx-auto max-w-5xl">
                 <div class="mb-6">
-                <h1 class="text-3xl font-semibold tracking-tight text-slate-900 mb-2">创建新项目</h1>
+                <h1 class="text-3xl font-semibold tracking-tight text-slate-900 mb-2">{{ isEditMode ? '编辑项目' : '创建新项目' }}</h1>
                 <p class="text-sm text-slate-500">
                         项目用于存放你的笔记和学习资料。已有内容？
                         <a href="#" class="text-emerald-700 hover:underline">导入内容</a>。
@@ -158,7 +158,7 @@
             type="submit"
                         class="px-5 py-3 bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-medium rounded-2xl shadow-sm transition-colors hover:scale-[1.01] active:scale-[0.99] duration-200"
             >
-            创建项目
+            {{ isEditMode ? '保存修改' : '创建项目' }}
             </button>
         </div>
         </form>
@@ -168,15 +168,23 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { toastSuccess, toastWarn, toastError } from '@/utils/toast'
 import { getUserInfo } from '@/api/user'
-import { createProject } from '@/api/project'
+import { createProject, getProject, updateProject } from '@/api/project'
 import { headerTabs, createHeaderTabClickHandler } from '@/composables/useHeaderNavigation'
 import SiteHeader from '@/components/SiteHeader.vue'
 
 const router = useRouter()
+const route = useRoute()
+
+const editProjectId = computed(() => {
+    const value = route.query.projectid
+    const numeric = Number(Array.isArray(value) ? value[0] : value)
+    return Number.isFinite(numeric) && numeric > 0 ? numeric : null
+})
+const isEditMode = computed(() => editProjectId.value !== null)
 
 const userInfo = ref({
     username: 'xxx',
@@ -201,8 +209,30 @@ const fetchUserInfo = async () => {
     }
 }
 
+const loadProject = async () => {
+    if (!editProjectId.value) return
+
+    try {
+        const res = await getProject({ project_id: editProjectId.value })
+        if (res.code === 200 && res.data) {
+            projectName.value = res.data.title || ''
+            projectDesc.value = res.data.description || ''
+            startDate.value = res.data.start_date ? String(res.data.start_date).slice(0, 10) : ''
+            endDate.value = res.data.end_date ? String(res.data.end_date).slice(0, 10) : ''
+        } else {
+            toastError(res.message || '获取项目失败')
+            router.push('/home')
+        }
+    } catch (error) {
+        console.log('获取项目失败：', error)
+        toastError('网络异常，请稍后重试')
+        router.push('/home')
+    }
+}
+
 onMounted(() => {
     fetchUserInfo()
+    loadProject()
 })
 
 const handleHeaderTabClick = createHeaderTabClickHandler(router)
@@ -218,7 +248,6 @@ const formatDateToRFC3339 = (dateStr) => {
     // YYYY-MM-DD → YYYY-MM-DDTHH:mm:ssZ（UTC时间）
     return new Date(dateStr).toISOString()
 }
-// 模拟提交
 const handleSubmit = async () => {
     if (!projectName.value.trim()) {
         toastWarn('项目名称为必填项！')
@@ -228,19 +257,29 @@ const handleSubmit = async () => {
         toastWarn('项目起始时间必须设置！')
         return
     }
-    const res = await createProject({
+    const payload = {
         title: projectName.value,
         description: projectDesc.value,
         start_date: formatDateToRFC3339(startDate.value),
         end_date: formatDateToRFC3339(endDate.value),
-    })
-
-    if (res.code === 200) {
-        toastSuccess(`项目 "${projectName.value}" 创建成功!`)
-        router.push('/home')
-    } else if (res.code === 1001) {
-        toastWarn('项目名已存在')
     }
-    // 实际项目中可跳转到项目页面
+
+    try {
+        const res = isEditMode.value
+            ? await updateProject({ project_id: editProjectId.value, ...payload })
+            : await createProject(payload)
+
+        if (res.code === 200) {
+            toastSuccess(isEditMode.value ? '项目修改成功!' : `项目 "${projectName.value}" 创建成功!`)
+            router.push('/home')
+        } else if (res.code === 1001) {
+            toastWarn('项目名已存在')
+        } else {
+            toastError(res.message || (isEditMode.value ? '项目修改失败' : '项目创建失败'))
+        }
+    } catch (error) {
+        console.log('提交项目失败：', error)
+        toastError('网络异常，请稍后重试')
+    }
 }
 </script>
