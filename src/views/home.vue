@@ -246,7 +246,7 @@ const setViewMode = (mode) => {
 const navigateToEditProject = (item) => {
   router.push({
     path: '/project/new',
-    query: { projectid: item.project_id },
+    query: { title: item.title },
   })
 }
 
@@ -256,7 +256,6 @@ const navigateToProject = (item) => {
     params: { 
       username: userInfo.value.username,
       projecttitle: item.title,
-      projectid: item.project_id
     }
   })
 }

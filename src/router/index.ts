@@ -23,7 +23,7 @@ const routes: RouteRecordRaw[] = [
         component: Stats
     },
     {
-        path: '/:username/:projecttitle/:projectid',
+        path: '/:username/:projecttitle',
         name: 'project',
         component: Project
     },

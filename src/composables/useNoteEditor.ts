@@ -1,5 +1,4 @@
-import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, onMounted, watch, unref } from 'vue'
 import {
     getFilesByProjectID,
     updateFileContent,
@@ -12,9 +11,12 @@ const isHiddenFileName = (fileName: string) => {
     return String(fileName || '').trim().startsWith('.')
 }
 
-export function useNoteEditor() {
-    const route = useRoute()
-    const projectId = route.params.projectid
+export function useNoteEditor(projectIdSource?: any) {
+    const getProjectId = () => {
+        const value = unref(projectIdSource)
+        const numeric = Number(value)
+        return Number.isFinite(numeric) && numeric > 0 ? numeric : null
+    }
 
     // 当前项目下的所有文件
     const fileList = ref([])
@@ -30,9 +32,11 @@ export function useNoteEditor() {
     // ======================================
     const fetchFiles = async (options = {}) => {
         const silent = !!options.silent
+        const projectId = getProjectId()
+        if (!projectId) return
         try {
             const res = await getFilesByProjectID({
-                project_id: Number(projectId)
+                project_id: projectId
             })
             if (res.code === 200) {
                 fileList.value = res.data || []
@@ -95,6 +99,11 @@ export function useNoteEditor() {
             toastError('文件名不能为空')
             return null
         }
+        const projectId = getProjectId()
+        if (!projectId) {
+            toastError('项目尚未加载完成')
+            return null
+        }
 
         if (isHiddenFileName(normalizedName)) {
             toastError('不允许创建以 . 开头的文件')
@@ -147,11 +156,21 @@ export function useNoteEditor() {
     // 生命周期：进入页面自动加载文件
     // ======================================
     onMounted(() => {
-        if (projectId) fetchFiles()
+        if (getProjectId()) fetchFiles()
     })
 
+    watch(
+        () => getProjectId(),
+        (projectId) => {
+            if (projectId) {
+                fetchFiles()
+            }
+        },
+        { immediate: false }
+    )
+
     return {
-        projectId,
+        projectId: projectIdSource,
         fileList,
         currentFile,
         fetchFiles,

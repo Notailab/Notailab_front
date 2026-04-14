@@ -202,6 +202,7 @@ import { useNoteEditor } from '@/composables/useNoteEditor'
 import { useUserInfo } from '@/composables/useUserInfo'
 import { createFile } from '@/api/file'
 import { chatWithAgent } from '@/api/agent'
+import { getProjectByTitle } from '@/api/project'
 import { ref, onMounted, onUnmounted, nextTick, computed } from 'vue'
 import { toastSuccess, toastError } from '@/utils/toast'
 import { headerTabs, createHeaderTabClickHandler } from '@/composables/useHeaderNavigation'
@@ -209,10 +210,11 @@ import SiteHeader from '@/components/SiteHeader.vue'
 
 const route = useRoute()
 const router = useRouter()
-const projectTitle = route.params.projecttitle
-const projectId = route.params.projectid
+const projectTitle = ref(String(route.params.projecttitle || ''))
+const projectUsername = ref(String(route.params.username || ''))
+const projectId = ref(null)
 
-const { fileList, currentFile, openFile, saveFile, fetchFiles, removeFile } = useNoteEditor()
+const { fileList, currentFile, openFile, saveFile, fetchFiles, removeFile } = useNoteEditor(projectId)
 const { userInfo, fetchUserInfo } = useUserInfo()
 fetchUserInfo()
 
@@ -260,6 +262,23 @@ const handleToolbarClick = async (key) => {
     toastError('该工具暂不支持：' + key)
   } catch (err) {
     toastError('工具执行出错：' + err)
+  }
+}
+
+const loadProject = async () => {
+  try {
+    const res = await getProjectByTitle({ title: projectTitle.value })
+    if (res.code === 200 && res.data) {
+      projectId.value = res.data.project_id
+      projectTitle.value = res.data.title || projectTitle.value
+    } else {
+      toastError(res.message || '获取项目失败')
+      router.push('/home')
+    }
+  } catch (error) {
+    console.error('获取项目失败：', error)
+    toastError('网络异常，请稍后重试')
+    router.push('/home')
   }
 }
 
@@ -332,6 +351,10 @@ const handleSave = async () => {
     toastError('文件名不能为空')
     return
   }
+  if (!projectId.value) {
+    toastError('项目尚未加载完成')
+    return
+  }
   if (normalizedName.startsWith('.')) {
     toastError('不允许创建以 . 开头的文件')
     return
@@ -339,7 +362,7 @@ const handleSave = async () => {
 
   try {
     const res = await createFile({
-      project_id: +projectId,
+      project_id: projectId.value,
       name: normalizedName,
       content: editorContent.value,
     })
@@ -397,6 +420,8 @@ onMounted(() => {
   window.addEventListener('mousemove', onDrag)
   window.addEventListener('mouseup', stopDrag)
   window.addEventListener('keydown', handleGlobalShortcut)
+
+  loadProject()
 
   refreshTimer = window.setInterval(() => {
     if (document.hidden) return
@@ -495,13 +520,17 @@ const refreshFilesSilently = async () => {
 const sendMessage = async () => {
   const msg = inputMsg.value.trim()
   if (!msg) return
+  if (!projectId.value) {
+    toastError('项目尚未加载完成')
+    return
+  }
   messages.value.push({ role: 'user', content: msg })
   inputMsg.value = ''
   loading.value = true
 
   try {
     const res = await chatWithAgent({
-      project_id: Number(projectId),
+      project_id: Number(projectId.value),
       content: msg,
     })
 

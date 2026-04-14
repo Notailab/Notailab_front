@@ -172,19 +172,20 @@ import { ref, onMounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { toastSuccess, toastWarn, toastError } from '@/utils/toast'
 import { getUserInfo } from '@/api/user'
-import { createProject, getProject, updateProject } from '@/api/project'
+import { createProject, getProjectByTitle, updateProject } from '@/api/project'
 import { headerTabs, createHeaderTabClickHandler } from '@/composables/useHeaderNavigation'
 import SiteHeader from '@/components/SiteHeader.vue'
 
 const router = useRouter()
 const route = useRoute()
+const projectId = ref(null)
 
-const editProjectId = computed(() => {
-    const value = route.query.projectid
-    const numeric = Number(Array.isArray(value) ? value[0] : value)
-    return Number.isFinite(numeric) && numeric > 0 ? numeric : null
+const editProjectTitle = computed(() => {
+    const value = route.query.title
+    const text = Array.isArray(value) ? value[0] : value
+    return String(text || '').trim()
 })
-const isEditMode = computed(() => editProjectId.value !== null)
+const isEditMode = computed(() => editProjectTitle.value !== '')
 
 const userInfo = ref({
     username: 'xxx',
@@ -210,11 +211,12 @@ const fetchUserInfo = async () => {
 }
 
 const loadProject = async () => {
-    if (!editProjectId.value) return
+    if (!editProjectTitle.value) return
 
     try {
-        const res = await getProject({ project_id: editProjectId.value })
+        const res = await getProjectByTitle({ title: editProjectTitle.value })
         if (res.code === 200 && res.data) {
+            projectId.value = res.data.project_id
             projectName.value = res.data.title || ''
             projectDesc.value = res.data.description || ''
             startDate.value = res.data.start_date ? String(res.data.start_date).slice(0, 10) : ''
@@ -266,7 +268,7 @@ const handleSubmit = async () => {
 
     try {
         const res = isEditMode.value
-            ? await updateProject({ project_id: editProjectId.value, ...payload })
+            ? await updateProject({ project_id: projectId.value, ...payload })
             : await createProject(payload)
 
         if (res.code === 200) {

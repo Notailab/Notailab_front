@@ -16,6 +16,14 @@ export function getProject(data) {
     })
 }
 
+export function getProjectByTitle(data) {
+    return request({
+        url: '/project/get-by-title',
+        method: 'post',
+        data
+    })
+}
+
 export function updateProject(data) {
     return request({
         url: '/project/update',
